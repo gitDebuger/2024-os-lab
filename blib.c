@@ -1,9 +1,9 @@
 #include <blib.h>
 
 size_t strlen(const char *s) {
-    size_t res = 0;
-    while (*(s++)) ++res;
-    return res;
+    const char* eos = s;
+    while (*eos++);
+    return eos - s - 1;
 }
 
 char *strcpy(char *dst, const char *src) {
@@ -45,6 +45,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 }
 
 char *strcat(char *dst, const char *src) {
+    if (dst == NULL || src == NULL) return dst;
     char* res = dst;
     while (*dst) ++dst;
     while (*src) {
@@ -57,9 +58,10 @@ char *strcat(char *dst, const char *src) {
 }
 
 char *strncat(char *dst, const char *src, size_t n){
+    if (dst == NULL || src == NULL) return dst;
     char* res = dst;
     while (*dst) ++dst;
-    while (src && n) {
+    while (*src && n) {
         *dst = *src;
         ++dst;
         ++src;
@@ -80,29 +82,29 @@ char *strchr(const char *str, int character){
     return NULL;
 }
 
-char* strsep(char** stringp, const char* delim){
-    char* s;
-    const char* spanp;
+char *strsep(char **stringp, const char *delim) {
+    char *s;
+    const char *spanp;
     int c, sc;
-    char* tok;
-    
-    if ((s = *stringp) == NULL) return NULL;
-
-    tok = s;
-    for (;;) {
+    char *tok;
+    if ((s = *stringp) == NULL)
+        return (NULL);
+    for (tok = s;;) {
         c = *s++;
         spanp = delim;
         do {
             if ((sc = *spanp++) == c) {
-                if (c == 0) s = NULL;
-                else s[-1] = 0;
+                if (c == 0)
+                    s = NULL;
+                else
+                    s[-1] = 0;
                 *stringp = s;
-                return tok;
+                return (tok);
             }
-        } while (sc);
+        } while (sc != 0);
     }
+    /* NOTREACHED */
 }
-
 
 void *memset(void *s, int c, size_t n) {
     unsigned char *p = s;
