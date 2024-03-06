@@ -5,6 +5,9 @@ CFLAGS = -Wall -Wextra
 TARGETS: fibo
 
 .PHONY: all
+all: fibo
+
+.PHONY: fibo
 fibo: code/main.c code/fibo.c
 	$(CC) $(CFLAGS) -o $@ $^ -Iinclude -save-temps
 	rm -f *.i *.s
