@@ -4,10 +4,11 @@ cp -r -t test code
 cd test/code
 cat ../../code/14.c
 gcc -c *.c
-gcc -o hello *.o
+gcc -o ../hello *.o
+cd ..
 ./hello 2>err.txt
-mv -t ../../ err.txt
-cd ../../
+mv -t ../ err.txt
+cd ../
 chmod 655 err.txt
 if (( $# == 2 )); then
 	n=$(($1+$2))
