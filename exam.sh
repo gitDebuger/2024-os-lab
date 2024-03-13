@@ -16,5 +16,5 @@ elif (( $# == 1)); then
 else
 	n=2
 fi
-sed -n "${n}p" err.txt>2
+sed -n "${n}p" err.txt>&2
 
