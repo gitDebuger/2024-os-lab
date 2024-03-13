@@ -2,7 +2,7 @@
 mkdir test
 cp -r -t test code
 cd test/code
-cat 14.c
+cat ../../code/14.c
 gcc -c *.c
 gcc -o hello *.o
 ./hello 2>err.txt
