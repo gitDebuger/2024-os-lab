@@ -40,7 +40,16 @@ elif [ ! -z "$CMD" ]; then
     awk -v input=$CMD '{if(index($5,input)!=0){print $0}}' $FILE | cat
 elif [ ! -z $PID ]; then
     # Your code here. (3/3)
-    :
+    awk -v input=$PID '{
+	    pid[NR]=$2
+	    ppid[NR]=$3
+	    }END{
+		   p=input
+		   for(i=1;p!=0;++i){
+			   if(pid[i]==p){
+				   p=ppid[i]
+				   print p
+				   i=0}}}' $FILE | cat
 else
     usage
     exit 1
