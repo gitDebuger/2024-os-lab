@@ -7,6 +7,7 @@ LEAF(tlb_out)
 	nop
 	/* Step 1: Use 'tlbp' to probe TLB entry */
 	/* Exercise 2.8: Your code here. (1/2) */
+	tlbp
 
 	nop
 	/* Step 2: Fetch the probe result from CP0.Index */
@@ -20,6 +21,7 @@ LEAF(tlb_out)
 	nop
 	/* Step 3: Use 'tlbwi' to write CP0.EntryHi/Lo into TLB at CP0.Index  */
 	/* Exercise 2.8: Your code here. (2/2) */
+	tlbwi
 
 .set reorder
 
