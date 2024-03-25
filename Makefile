@@ -69,6 +69,7 @@ test: export test_dir = tests/lab$(lab)
 test: clean-and-all
 
 # 导入两个 Makefile 文件设定
+# mk/profiles.mk 用于 debug 和 release 的选择
 include mk/tests.mk mk/profiles.mk
 # 导出一些设定
 export CC CFLAGS LD LDFLAGS lab

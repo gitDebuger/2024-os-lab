@@ -1,3 +1,5 @@
+# 配置 test 文件
+# 设定一些编译选项
 ifneq ($(test_dir),)
 	ifneq ($(test_dir),$(wildcard $(test_dir)))
 $(error No such test: $(test_dir) )
@@ -30,6 +32,7 @@ $(error No such test: $(test_dir) )
 endif
 
 
+# 配置运行环境
 ifneq ($(wildcard $(test_dir)/Makefile),)
 $(test_dir): $(user_modules)
 	$(MAKE) --directory=$@
