@@ -165,29 +165,57 @@ typedef struct {
 
 /* Elf32_Phdr */
 typedef struct {
+	/* 段的类型用于指明段的用途和语义 */
+	/* PT_NULL 未使用的段 */
+	/* PT_LOAD 可加载段 */
+	/* PT_DYNAMIC 动态链接信息段 */
 	Elf32_Word p_type;   /* Segment type */
+	/* 表示段在文件中的偏移量即段的数据在文件中的位置 */
 	Elf32_Off p_offset;  /* Segment file offset */
+	/* 段在内存中的虚拟地址 */
 	Elf32_Addr p_vaddr;  /* Segment virtual address */
+	/* 段在内存中的物理地址 */
 	Elf32_Addr p_paddr;  /* Segment physical address */
+	/* 段在文件中的大小 */
 	Elf32_Word p_filesz; /* Segment size in file */
+	/* 段在内存中的大小 */
+	/* p_filesz 可能小于等于 p_memsz */
+	/* 表示段在内存中的数据需要进行初始化或者填充 */
 	Elf32_Word p_memsz;  /* Segment size in memory */
+	/* 段的标志用于指定段的属性和特性 */
+	/* PF_X 可执行 */
+	/* PF_W 可写 */
+	/* PF_R 可读 */
 	Elf32_Word p_flags;  /* Segment flags */
+	/* 段在内存中的对齐要求 */
+	/* 通常是一个字节的对齐或者更大的对齐值 */
 	Elf32_Word p_align;  /* Segment alignment */
 } Elf32_Phdr;
 /* End of Key Code "readelf-struct-def" */
 
 /* Legal values for p_type (segment type).  */
 
+/* 程序头表项未使用 */
 #define PT_NULL 0	     /* Program header table entry unused */
+/* 程序段可加载 */
 #define PT_LOAD 1	     /* Loadable program segment */
+/* 动态链接信息用于动态链接器对可执行文件进行重定位 */
 #define PT_DYNAMIC 2	     /* Dynamic linking information */
+/* 程序解释器指明用于解释执行该可执行文件的程序 */
 #define PT_INTERP 3	     /* Program interpreter */
+/* 辅助信息通常包含调试信息或其他辅助性的元数据 */
 #define PT_NOTE 4	     /* Auxiliary information */
+/* 保留字段暂时未使用 */
 #define PT_SHLIB 5	     /* Reserved */
+/* 程序头表本身的条目 */
+/* 包含程序头表的描述信息 */
 #define PT_PHDR 6	     /* Entry for header table itself */
+/* 定义段类型的数量 */
 #define PT_NUM 7	     /* Number of defined types.  */
+/* 定义操作系统特定的段类型 */
 #define PT_LOOS 0x60000000   /* Start of OS-specific */
 #define PT_HIOS 0x6fffffff   /* End of OS-specific */
+/* 定义处理器特定的段类型 */
 #define PT_LOPROC 0x70000000 /* Start of processor-specific */
 #define PT_HIPROC 0x7fffffff /* End of processor-specific */
 
@@ -196,6 +224,7 @@ typedef struct {
 #define PF_X (1 << 0)	       /* Segment is executable */
 #define PF_W (1 << 1)	       /* Segment is writable */
 #define PF_R (1 << 2)	       /* Segment is readable */
+/* 处理器特定掩码 */
 #define PF_MASKPROC 0xf0000000 /* Processor-specific */
 
 #endif /* elf.h */
