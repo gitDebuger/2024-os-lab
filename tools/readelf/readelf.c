@@ -12,6 +12,12 @@
  */
 int is_elf_format(const void *binary, size_t size) {
 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)binary;
+	/* 检测要求 */
+	/* 1. 文件大小大于等于 ELF 头表大小 */
+	/* 2. 魔数 0 */
+	/* 3. 魔数 1 */
+	/* 4. 魔数 2 */
+	/* 5. 魔数 3 */
 	return size >= sizeof(Elf32_Ehdr) && ehdr->e_ident[EI_MAG0] == ELFMAG0 &&
 	       ehdr->e_ident[EI_MAG1] == ELFMAG1 && ehdr->e_ident[EI_MAG2] == ELFMAG2 &&
 	       ehdr->e_ident[EI_MAG3] == ELFMAG3;
