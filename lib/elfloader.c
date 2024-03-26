@@ -74,6 +74,8 @@ int elf_load_seg(Elf32_Phdr *ph, const void *bin, elf_mapper_t map_page, void *d
 		}
 		i += PAGE_SIZE;
 	}
+	/* typedef int (*elf_mapper_t)(void *data, u_long va, size_t offset, u_int perm, const void *src, size_t len); */
+	/* 上述为函数原型 */
 	/* 看起来 map_page 是一个向内存填充程序段的函数 */
 	/* @param: data 目前还不知道是用来做什么的 */
 	/* @param: virtual_address 填充到内存的虚拟地址 */

@@ -2,9 +2,11 @@
 #include <mmu.h>
 
 .text
+# 导出 _start 以便和 C 语言程序连接
 EXPORT(_start)
 .set at
 .set reorder
+# 循环清空 .bss 段的数据
 /* Lab 1 Key Code "enter-kernel" */
 	/* clear .bss segment */
 	la      v0, bss_start
