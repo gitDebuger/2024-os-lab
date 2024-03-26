@@ -3,6 +3,10 @@
 
 /* forward declaration */
 /* @param: fmt_callback_t 回调函数 */
+/* void *data 目前并没有使用 */
+/* 只是单纯地传入了一个 NULL 值 */
+/* 有理由猜测后续可能会把 data 作为输出目的地 */
+/* 当传入指针非空时将输出到 data 指向的地方 */
 static void print_char(fmt_callback_t, void *, char, int, int);
 static void print_str(fmt_callback_t, void *, const char *, int, int);
 static void print_num(fmt_callback_t, void *, unsigned long, int, int, int, int, char, int);
@@ -231,19 +235,27 @@ void vprintfmt(fmt_callback_t out, void *data, const char *fmt, va_list ap) {
 void print_char(fmt_callback_t out, void *data, char c, int length, int ladjust) {
 	int i;
 
+	/* 输出宽度至少为 1 */
 	if (length < 1) {
 		length = 1;
 	}
+	/* 填充字符为空格 */
 	const char space = ' ';
 	if (ladjust) {
+		/* 处理左对齐 */
+		/* 先输出传入的字符 */
 		out(data, &c, 1);
+		/* 然后循环填充空格占位符 */
 		for (i = 1; i < length; i++) {
 			out(data, &space, 1);
 		}
 	} else {
+		/* 处理右对齐 */
+		/* 先循环输出空白符 */
 		for (i = 0; i < length - 1; i++) {
 			out(data, &space, 1);
 		}
+		/* 输入传入的字符 */
 		out(data, &c, 1);
 	}
 }
@@ -251,6 +263,8 @@ void print_char(fmt_callback_t out, void *data, char c, int length, int ladjust)
 void print_str(fmt_callback_t out, void *data, const char *s, int length, int ladjust) {
 	int i;
 	int len = 0;
+	/* 确定需要输出的长度 */
+	/* 其实调用 strlen 函数是更好的选择 */
 	const char *s1 = s;
 	while (*s1++) {
 		len++;
@@ -259,6 +273,7 @@ void print_str(fmt_callback_t out, void *data, const char *s, int length, int la
 		length = len;
 	}
 
+	/* 根据左对齐和右对齐的不同分别输出字符串内容 */
 	if (ladjust) {
 		out(data, s, len);
 		for (i = len; i < length; i++) {
@@ -289,6 +304,7 @@ void print_num(fmt_callback_t out, void *data, unsigned long u, int base, int ne
 	char *p = buf;
 	int i;
 
+	/* 将数字倒序存放在数组中 */
 	do {
 		int tmp = u % base;
 		if (tmp <= 9) {
@@ -301,11 +317,13 @@ void print_num(fmt_callback_t out, void *data, unsigned long u, int base, int ne
 		u /= base;
 	} while (u != 0);
 
+	/* 根据 neg_flag 存入负号 */
 	if (neg_flag) {
 		*p++ = '-';
 	}
 
 	/* figure out actual length and adjust the maximum length */
+	/* 确定输出长度 */
 	actualLength = p - buf;
 	if (length < actualLength) {
 		length = actualLength;
@@ -315,27 +333,36 @@ void print_num(fmt_callback_t out, void *data, unsigned long u, int base, int ne
 	if (ladjust) {
 		padc = ' ';
 	}
+	/* 负数并且右对齐并且使用字符 0 填充 */
 	if (neg_flag && !ladjust && (padc == '0')) {
+		/* 在数字高位补 0 */
 		for (i = actualLength - 1; i < length - 1; i++) {
 			buf[i] = padc;
 		}
+		/* 然后加入负号 */
 		buf[length - 1] = '-';
 	} else {
+		/* 否则直接填充 */
 		for (i = actualLength; i < length; i++) {
 			buf[i] = padc;
 		}
 	}
 
 	/* prepare to reverse the string */
+	/* 翻转字符串 */
 	int begin = 0;
 	int end;
+	/* 左对齐只翻转数字部分 */
+	/* 不翻转后面的空白符 */
 	if (ladjust) {
 		end = actualLength - 1;
 	} else {
+		/* 右对齐连同空白符一起翻转 */
 		end = length - 1;
 	}
 
 	/* adjust the string pointer */
+	/* 双指针翻转字符串 */
 	while (end > begin) {
 		char tmp = buf[begin];
 		buf[begin] = buf[end];
@@ -344,5 +371,6 @@ void print_num(fmt_callback_t out, void *data, unsigned long u, int base, int ne
 		end--;
 	}
 
+	/* 调用 out 输出字符串 */
 	out(data, buf, length);
 }
