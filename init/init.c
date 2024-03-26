@@ -38,6 +38,8 @@
  * https://github.com/u-boot/u-boot/blob/v2023.10/arch/mips/lib/bootm.c#L274C1-L302C2
  */
 
+/* 这个内核启动函数会被 ../tests/lab?_?/init.c 中的 mips_init 函数替代 */
+/* @param: ram_low_size the available physical memory size */
 void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 	printk("init.c:\tmips_init() is called\n");
 

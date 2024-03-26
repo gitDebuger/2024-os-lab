@@ -1,3 +1,4 @@
+/* 打印测试代码 */
 static void printk_1_check(void) {
 	printk("%5d\n", 999999);
 	printk("%5d\n", 12);
@@ -32,6 +33,7 @@ static void printk_1_check(void) {
 	printk("\n");
 }
 
+/* 还是打印测试 */
 static void printk_2_check(void) {
 	int a = 97;
 	int b = -97;
@@ -64,6 +66,7 @@ static void printk_2_check(void) {
 	printk("%04lxend\n", b);
 }
 
+/* 依然是打印测试 */
 static void printk_3_check(void) {
 	int b = 98;
 	int c = -98;
@@ -91,10 +94,13 @@ static void printk_3_check(void) {
 	printk("%d and %b\n", c, b);
 	printk("%d and %u\n", c, b);
 }
+/* 以上都是无趣的打印检测代码 */
 
+/* 导入外部变量 bss_end */
 extern char bss_end[];
 
 void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
+	/* 检测内核地址或者 bss 段结束地址是否超出合法地址范围 */
 	if ((u_long)mips_init < KERNBASE || (u_long)mips_init >= KSTACKTOP) {
 		panic("bad address of kernel code: %x", mips_init);
 	}
@@ -105,5 +111,9 @@ void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 	printk_1_check();
 	printk_2_check();
 	printk_3_check();
+	/* 测试完执行 halt() 进行停机 */
+	/* 不然它会死循环一直输出 */
+	/* 再加上某文件中禁止了使用 Ctrl+C 终止运行 */
+	/* 只能使用关闭终端大法结束程序 */
 	halt();
 }
