@@ -1,3 +1,4 @@
+/* 协处理器 0 寄存器列表 */
 #ifndef _cp0regdef_h_
 #define _cp0regdef_h_
 

@@ -33,6 +33,7 @@ clear_bss_done:
 	# 再类似的 mtc1 和 mfc1 负责操作协处理器 1 的寄存器
 	# 协处理器 1 是 FPU 用于处理浮点数
 	# 也就是浮点运算单元
+	# 定义在 /include/asm/regdef.h 中
 	mtc0    zero, CP0_STATUS
 
 	/* hint: you can refer to the memory layout in include/mmu.h */

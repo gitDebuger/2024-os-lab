@@ -17,7 +17,10 @@ typedef unsigned long u_long;
 	})
 
 /* Rounding; only works for n = power of two */
+/* 大于等于 a 的最小的 2 的倍数 */
 #define ROUND(a, n) (((((u_long)(a)) + (n)-1)) & ~((n)-1))
+/* 小于等于 a 的最大的 2 的倍数 */
 #define ROUNDDOWN(a, n) (((u_long)(a)) & ~((n)-1))
+/* 用于内存对齐 */
 
 #endif /* !_INC_TYPES_H_ */

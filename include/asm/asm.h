@@ -1,5 +1,6 @@
 #include <asm/cp0regdef.h>
 #include <asm/regdef.h>
+/* 看起来是用来操作汇编代码的 */
 
 /*
  * LEAF - declare leaf routine
