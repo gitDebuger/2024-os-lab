@@ -3,8 +3,11 @@
 
 .text
 # 导出 _start 以便和 C 语言程序连接
+# 将 _start 设置为全局符号
 EXPORT(_start)
+# 允许汇编器使用 at 寄存器
 .set at
+# 允许汇编器进行指令重排
 .set reorder
 # 循环清空 .bss 段的数据
 /* Lab 1 Key Code "enter-kernel" */
@@ -48,4 +51,5 @@ clear_bss_done:
 	/* jump to mips_init */
 	/* Exercise 1.3: Your code here. (2/2) */
 	# addi    sp, sp, -1024
+	# 使用 j 而不是 jal 因为 mips_init 函数不会返回
 	j       mips_init
