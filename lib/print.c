@@ -205,6 +205,37 @@ void vprintfmt(fmt_callback_t out, void *data, const char *fmt, va_list ap) {
 			print_char(out, data, c, width, ladjust);
 			break;
 
+		case 'P':
+			print_char(out, data, '(', 1, ladjust);
+			long x, y, z;
+			if (long_flag) {
+				x = va_arg(ap, long int);
+				y = va_arg(ap, long int);
+			} else {
+				x = va_arg(ap, int);
+				y = va_arg(ap, int);
+			}
+			if (x < 0) {
+				x = -x;
+				neg_flag = 1;
+			}
+			print_num(out, data, x, 10, neg_flag, width, ladjust, padc, 0);
+			print_char(out, data, ',', 1, ladjust);
+			if (y < 0) {
+				y = -y;
+				neg_flag = 1;
+			}
+			print_num(out, data, y, 10, neg_flag, width, ladjust, padc, 0);
+			print_char(out, data, ',', 1, ladjust);
+			z = (x + y) * (x - y);
+			if (z < 0) {
+				z = -z;
+			}
+			print_num(out, data, z, 10, 0, width, ladjust, padc, 0);
+			print_char(out, data, ')', 1, ladjust);
+			break;
+
+
 		/* 字符串格式输出 */
 		case 's':
 			/* 从 va_list 中获取字符串 */
