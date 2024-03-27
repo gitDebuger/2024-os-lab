@@ -374,3 +374,86 @@ void print_num(fmt_callback_t out, void *data, unsigned long u, int base, int ne
 	/* 调用 out 输出字符串 */
 	out(data, buf, length);
 }
+
+int vscanfmt(scan_callback_t in, void *data, const char *fmt, va_list ap) {
+	// int *ip;
+	// char *cp;
+	char ch;
+	// int base;
+	int num;
+	int neg;
+	int ret = 0;
+	int *target_int;
+	int *target_xint;
+	char *target_char;
+	char *target_str;
+
+	while (*fmt) {
+		if (*fmt == '%') {
+			ret++;
+			fmt++;
+			do {
+				in(data, &ch, 1);
+			} while (ch == ' ' || ch == '\t' || ch == '\n');
+			switch (*fmt) {
+			case 'd':
+				target_int = va_arg(ap, int*);
+				if (ch == '-') {
+					neg = 1;
+					in(data, &ch, 1);
+				} else {
+					neg = 0;
+				}
+				num = 0;
+				while (ch != ' ' && ch != '\t' && ch != '\n') {
+					num = num * 10 + ch - '0';
+					in(data, &ch, 1);
+				}
+				if (neg) {
+					num = -num;
+				}
+				*target_int = num;
+				break;
+			case 'x':
+				target_xint = va_arg(ap, int*);
+				if (ch == '-') {
+					neg = 1;
+					in(data, &ch, 1);
+				} else {
+					neg = 0;
+				}
+				num = 0;
+				while (ch != ' ' && ch != '\t' && ch != '\n') {
+					if (ch >= 'a' && ch <= 'f') {
+						num = num * 16 + 10 + ch - 'a';
+						in(data, &ch, 1);
+					} else {
+						num = num * 16 + ch - '0';
+						in(data, &ch, 1);
+					}
+				}
+				if (neg) {
+					num = -num;
+				}
+				*target_xint = num;
+				break;
+			case 'c':
+				target_char = (char *)va_arg(ap, char*);
+				*target_char = (char)ch;
+				break;
+			case 's':
+				target_str = (char *)va_arg(ap, char*);
+				char *ptr = target_str;
+				while (ch != ' ' && ch != '\t' && ch != '\n') {
+					*ptr = ch;
+					ptr++;
+					in(data, &ch, 1);
+				}
+				*ptr = 0;
+				break;
+			}
+			fmt++;
+		}
+	}
+	return ret;
+}
