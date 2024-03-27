@@ -45,8 +45,8 @@ clear_bss_done:
 	# 伪指令 li sp, 0x80400000
 	# 由于 16 位立即数不足以容纳 0x80400000
 	# 所以需要使用 lui-ori 指令组完成
-    lui       t0, 0x00008040
-    ori       sp, t0, 0x00000000
+	lui       t0, 0x00008040
+	ori       sp, t0, 0x00000000
 	# la        sp, 0x80400000
 	/* jump to mips_init */
 	/* Exercise 1.3: Your code here. (2/2) */
