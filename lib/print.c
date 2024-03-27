@@ -218,12 +218,16 @@ void vprintfmt(fmt_callback_t out, void *data, const char *fmt, va_list ap) {
 			if (x < 0) {
 				x = -x;
 				neg_flag = 1;
+			} else {
+				neg_flag = 0;
 			}
 			print_num(out, data, x, 10, neg_flag, width, ladjust, padc, 0);
 			print_char(out, data, ',', 1, ladjust);
 			if (y < 0) {
 				y = -y;
 				neg_flag = 1;
+			} else {
+				neg_flag = 0;
 			}
 			print_num(out, data, y, 10, neg_flag, width, ladjust, padc, 0);
 			print_char(out, data, ',', 1, ladjust);
