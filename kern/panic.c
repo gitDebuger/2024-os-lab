@@ -4,6 +4,7 @@
 
 void outputk(void *data, const char *buf, size_t len);
 
+/* 用于输出错误信息打印栈空间 */
 void _panic(const char *file, int line, const char *func, const char *fmt, ...) {
 	u_long sp, ra, badva, sr, cause, epc;
 	asm("move %0, $29" : "=r"(sp) :);

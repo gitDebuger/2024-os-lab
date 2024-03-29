@@ -5,24 +5,24 @@
  * Part 1.  Page table/directory defines.
  */
 
-#define NASID 256
-#define PAGE_SIZE 4096
-#define PTMAP PAGE_SIZE
-#define PDMAP (4 * 1024 * 1024) // bytes mapped by a page directory entry
-#define PGSHIFT 12
-#define PDSHIFT 22 // log2(PDMAP)
-#define PDX(va) ((((u_long)(va)) >> PDSHIFT) & 0x03FF)
-#define PTX(va) ((((u_long)(va)) >> PGSHIFT) & 0x03FF)
-#define PTE_ADDR(pte) (((u_long)(pte)) & ~0xFFF)
-#define PTE_FLAGS(pte) (((u_long)(pte)) & 0xFFF)
+#define NASID 256 /* unknown */
+#define PAGE_SIZE 4096 /* 页面大小 */
+#define PTMAP PAGE_SIZE /* 页面大小 */
+#define PDMAP (4 * 1024 * 1024) // bytes mapped by a page directory entry 由页目录表映射的字节即页目录表的大小
+#define PGSHIFT 12 /* 页大小 log_2 对数值 */
+#define PDSHIFT 22 // log_2(PDMAP)
+#define PDX(va) ((((u_long)(va)) >> PDSHIFT) & 0x03FF) /* 虚拟地址对应的页目录项相对于相对于页目录基地址的偏移 */
+#define PTX(va) ((((u_long)(va)) >> PGSHIFT) & 0x03FF) /* 虚拟地址对应的页目录项相对于页表基地址的偏移 */
+#define PTE_ADDR(pte) (((u_long)(pte)) & ~0xFFF) /* 获取页表项中的物理页帧地址 */
+#define PTE_FLAGS(pte) (((u_long)(pte)) & 0xFFF) /* 获取页表项中的标志位集合 */
 
 // Page number field of an address
-#define PPN(pa) (((u_long)(pa)) >> PGSHIFT)
-#define VPN(va) (((u_long)(va)) >> PGSHIFT)
+#define PPN(pa) (((u_long)(pa)) >> PGSHIFT) /* 提取给定物理地址的页号 */
+#define VPN(va) (((u_long)(va)) >> PGSHIFT) /* 提取给定虚拟地址的页号 */
 
 // Page Table/Directory Entry flags
 
-#define PTE_HARDFLAG_SHIFT 6
+#define PTE_HARDFLAG_SHIFT 6 /* 硬件标志位相对于页表项的起始地址 */
 
 // TLB EntryLo and Memory Page Table Entry Bit Structure Diagram.
 // entrylo.value == pte.value >> 6
@@ -120,9 +120,9 @@
  o
 */
 
-#define KERNBASE 0x80020000
+#define KERNBASE 0x80020000 /* 内核基地址 */
 
-#define KSTACKTOP (ULIM + PDMAP)
+#define KSTACKTOP (ULIM + PDMAP) /* 内核堆栈的顶部地址 */
 #define ULIM 0x80000000
 
 #define UVPT (ULIM - PDMAP)
@@ -146,11 +146,12 @@
 #include <string.h>
 #include <types.h>
 
-extern u_long npage;
+extern u_long npage; /* 内核总页面数 */
 
-typedef u_long Pde;
-typedef u_long Pte;
+typedef u_long Pde; /* 页目录项 page directory entry */
+typedef u_long Pte; /* 页表项 page table entry */
 
+/* 从内核虚拟地址转化为物理地址 */
 #define PADDR(kva)                                                                                 \
 	({                                                                                         \
 		u_long _a = (u_long)(kva);                                                         \
@@ -160,6 +161,7 @@ typedef u_long Pte;
 	})
 
 // translates from physical address to kernel virtual address
+/* 从物理地址转化为内核虚拟地址 */
 #define KADDR(pa)                                                                                  \
 	({                                                                                         \
 		u_long _ppn = PPN(pa);                                                             \
@@ -169,6 +171,7 @@ typedef u_long Pte;
 		(pa) + ULIM;                                                                       \
 	})
 
+/* 断言 */
 #define assert(x)                                                                                  \
 	do {                                                                                       \
 		if (!(x)) {                                                                        \

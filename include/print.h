@@ -4,6 +4,9 @@
 #include <stdarg.h>
 #include <types.h>
 
+/* 回调函数用于输出指定长度的字符序列 */
+/* @param: buf 字符序列首地址 */
+/* @param: len 输出字符序列的长度 */
 typedef void (*fmt_callback_t)(void *data, const char *buf, size_t len);
 
 /* Lab 1 Key Code "vprintfmt-overview" */
@@ -27,6 +30,8 @@ typedef void (*fmt_callback_t)(void *data, const char *buf, size_t len);
  * Note that the buffer may not be null-terminated and may contain embedded null bytes,
  * so the output sink should treat 'len' as the actual length of the buffer to print.
  */
+/* 在 printk 中被调用 */
+/* 接收 printk 处理过的变长参数列表并完成解析输出 */
 void vprintfmt(fmt_callback_t out, void *data, const char *fmt, va_list ap);
 /* End of Key Code "vprintfmt-overview" */
 

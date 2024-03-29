@@ -1,3 +1,4 @@
+/* 通用寄存器列表 */
 #ifndef __ASM_MIPS_REGDEF_H
 #define __ASM_MIPS_REGDEF_H
 

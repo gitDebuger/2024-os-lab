@@ -1,3 +1,4 @@
+# 一个普通且无趣的 Makefile 文件
 INCLUDES    := -I../include/
 
 %.o: %.c

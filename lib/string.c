@@ -1,5 +1,6 @@
 #include <types.h>
 
+/* 复刻 memcpy 函数 */
 void *memcpy(void *dst, const void *src, size_t n) {
 	void *dstaddr = dst;
 	void *max = dst + n;
@@ -29,6 +30,7 @@ void *memcpy(void *dst, const void *src, size_t n) {
 	return dstaddr;
 }
 
+/* 复刻 memset 函数 */
 void *memset(void *dst, int c, size_t n) {
 	void *dstaddr = dst;
 	void *max = dst + n;
@@ -52,6 +54,7 @@ void *memset(void *dst, int c, size_t n) {
 	return dstaddr;
 }
 
+/* 复刻 strlen 函数 */
 size_t strlen(const char *s) {
 	int n;
 
@@ -62,6 +65,7 @@ size_t strlen(const char *s) {
 	return n;
 }
 
+/* 复刻 strcpy 函数 */
 char *strcpy(char *dst, const char *src) {
 	char *ret = dst;
 
@@ -71,6 +75,7 @@ char *strcpy(char *dst, const char *src) {
 	return ret;
 }
 
+/* 复刻 strchr 函数 */
 const char *strchr(const char *s, int c) {
 	for (; *s; s++) {
 		if (*s == c) {
@@ -80,6 +85,7 @@ const char *strchr(const char *s, int c) {
 	return 0;
 }
 
+/* 复刻 strcmp 函数 */
 int strcmp(const char *p, const char *q) {
 	while (*p && *p == *q) {
 		p++, q++;
