@@ -245,20 +245,37 @@ void page_init(void) {
  *
  * Hint: Use LIST_FIRST and LIST_REMOVE defined in include/queue.h.
  */
+/**
+ * 从空闲内存中申请一个物理页面然后用0填充
+ * 后置条件：
+ * 如果申请失败则返回-E_NO_MEM
+ * 否则将*new设置为新申请的页面并返回0
+ * 注意：
+ * 这一步操作并不增加页面的引用计数——调用者必须这样做如果有必要的话
+ * 或者直接操作引用计数或者通过page_insert函数
+*/
+/* page_free_list -> page_1 -> page_2 -> ... -> page_m */
+/* 这是一个特殊的双向链表 */
 int page_alloc(struct Page **new) {
 	/* Step 1: Get a page from free memory. If fails, return the error code.*/
 	struct Page *pp;
 	/* Exercise 2.4: Your code here. (1/2) */
+	/* 判定是否存在空闲页面 */
 	if (LIST_EMPTY(&page_free_list)) {
 		return -E_NO_MEM;
 	}
+	/* 获取空闲页面链表中的第一个页面 */
 	pp = LIST_FIRST(&page_free_list);
 
+	/* 从空闲链表中移除这一页面 */
 	LIST_REMOVE(pp, pp_link);
 
 	/* Step 2: Initialize this page with zero.
 	 * Hint: use `memset`. */
 	/* Exercise 2.4: Your code here. (2/2) */
+	/* 将对应内存地址的数据清零 */
+	/* page2kva将传入的页面结构体指针转换为内核虚拟地址 */
+	/* page to kernel virtual address */
 	memset((void*)page2kva(pp), 0, PAGE_SIZE);
 
 	*new = pp;
@@ -271,6 +288,8 @@ int page_alloc(struct Page **new) {
  * Pre-Condition:
  *   'pp->pp_ref' is '0'.
  */
+/* 回收页面并将其插入空闲页面链表中 */
+/* 在回收之前首先判断引用计数是否为零 */
 void page_free(struct Page *pp) {
 	assert(pp->pp_ref == 0);
 	/* Just insert it into 'page_free_list'. */
@@ -296,13 +315,22 @@ void page_free(struct Page *pp) {
  *   We use a two-level pointer to store page table entry and return a state code to indicate
  *   whether this function succeeds or not.
  */
+/**
+ * @param pgdir 一级页表基地址
+ * @param va 虚拟地址
+ * @param create 创建位
+ * @param ppte 虚拟地址va所在的页表项指针存放位置
+ * @return 函数执行结果——失败返回-E_NO_MEM错误码
+*/
 static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	Pde *pgdir_entryp;
 	struct Page *pp;
 
 	/* Step 1: Get the corresponding page directory entry. */
 	/* Exercise 2.6: Your code here. (1/3) */
+	/* 页目录项地址等于页目录基地址加上虚拟地址va对应的偏移量 */
 	pgdir_entryp = pgdir + PDX(va);
+	/* 获取页目录项的值 */
 	Pde pgdir_entry_data = *pgdir_entryp;
 
 	/* Step 2: If the corresponding page table is not existent (valid) then:
@@ -315,18 +343,27 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	/* Get low 12 bit of the page directory entry */
 	// u_long perm = pgdir_entry_data & 0xfff;
 	/* Why using *pgdir_entryp instead of perm? */
+	/* 获取有效位的信息 */
+	/* 如果对应页目录项无效 */
 	if ((pgdir_entry_data & PTE_V) == 0) {
+		/* 如果允许创建 */
 		if (create) {
+			/* 调用page_alloc函数申请新的页面到pp中用于存储新的页表 */
 			int return_code = page_alloc(&pp);
+			/* 申请失败则返回错误码 */
 			if (return_code == -E_NO_MEM) {
 				return -E_NO_MEM;
 			}
 			/* Why increase pp_ref instead of setting pp_ref to 1? */
+			/* 增加引用计数 */
 			++(pp->pp_ref);
 			/* Why? */
+			/* 将新申请的页面的物理地址以及权限位写入到页目录项中 */
+			/* page2pa(pp)代表物理页表基地址？ */
 			*pgdir_entryp = page2pa(pp) | (PTE_C_CACHEABLE | PTE_V);
 			pgdir_entry_data = *pgdir_entryp;
 		} else {
+			/* 如果不允许创建则将*ppte设置为NULL */
 			*ppte = NULL;
 			return 0;
 		}
@@ -335,7 +372,12 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	/* Step 3: Assign the kernel virtual address of the page table entry to '*ppte'. */
 	/* Exercise 2.6: Your code here. (3/3) */
 	/* Why? */
+	/* 无论是不是新创建的页表都进入这一步骤 */
+	/* PTE_ADDR(pgdir_entry_data)从页目录项中解析出页表基地址 */
+	/* 再调用KADDR将页表基地址转换为内核虚拟地址 */
+	/* 然后强制类型转换赋值给pgtable作为页表基地址 */
 	Pte *pgtable = (Pte *)KADDR(PTE_ADDR(pgdir_entry_data));
+	/* 页表基地址加上虚拟地址va对应的偏移量 */
 	*ppte = pgtable + PTX(va);
 
 	return 0;
@@ -353,17 +395,34 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
  *   If there is already a page mapped at `va`, call page_remove() to release this mapping.
  *   The `pp_ref` should be incremented if the insertion succeeds.
  */
+/**
+ * 将物理页面pp映射到虚拟地址va并设置页表项权限
+ * @param pgdir 页目录基地址
+ * @param asid unknown
+ * @param pp 页面
+ * @param va 虚拟地址
+ * @param perm 需要设置的权限
+ * @return 函数执行状态码
+*/
 int page_insert(Pde *pgdir, u_int asid, struct Page *pp, u_long va, u_int perm) {
 	Pte *pte;
 
 	/* Step 1: Get corresponding page table entry. */
+	/* 调用函数获取二级页表项 */
+	/* 这里create参数为0不允许创建新的页表 */
 	pgdir_walk(pgdir, va, 0, &pte);
 
+	/* 如果pte不为空并且pte有效说明存在映射 */
 	if (pte && (*pte & PTE_V)) {
+		/* 如果当前映射页面和要插入的页不相同 */
 		if (pa2page(*pte) != pp) {
+			/* 则先移除现有的映射关系 */
 			page_remove(pgdir, asid, va);
 		} else {
+			/* 否则更改权限即可 */
+			/* 设置TLB无效 */
 			tlb_invalidate(asid, va);
+			/* 重新设置权限位 */
 			*pte = page2pa(pp) | perm | PTE_C_CACHEABLE | PTE_V;
 			return 0;
 		}
@@ -371,12 +430,16 @@ int page_insert(Pde *pgdir, u_int asid, struct Page *pp, u_long va, u_int perm) 
 
 	/* Step 2: Flush TLB with 'tlb_invalidate'. */
 	/* Exercise 2.7: Your code here. (1/3) */
+	/* 同样刷新TLB缓存信息 */
 	tlb_invalidate(asid, va);
 
 	/* Step 3: Re-get or create the page table entry. */
 	/* If failed to create, return the error. */
 	/* Exercise 2.7: Your code here. (2/3) */
+	/* 再次获取页表项 */
+	/* 这次create参数为1允许创建新的页表 */
 	int return_code = pgdir_walk(pgdir, va, 1, &pte);
+	/* 失败返回错误码 */
 	if (return_code == -E_NO_MEM) {
 		return -E_NO_MEM;
 	}
@@ -384,33 +447,49 @@ int page_insert(Pde *pgdir, u_int asid, struct Page *pp, u_long va, u_int perm) 
 	/* Step 4: Insert the page to the page table entry with 'perm | PTE_C_CACHEABLE | PTE_V'
 	 * and increase its 'pp_ref'. */
 	/* Exercise 2.7: Your code here. (3/3) */
+	/* 插入页面到页表项中 */
 	*pte = page2pa(pp) | perm | PTE_C_CACHEABLE | PTE_V;
+	/* 增加页面的引用计数 */
 	++(pp->pp_ref);
 
 	return 0;
 }
 
 /* Lab 2 Key Code "page_lookup" */
-/*Overview:
-    Look up the Page that virtual address `va` map to.
-  Post-Condition:
-    Return a pointer to corresponding Page, and store it's page table entry to *ppte.
-    If `va` doesn't mapped to any Page, return NULL.*/
+/** Overview:
+ * Look up the Page that virtual address `va` map to.
+ * Post-Condition:
+ * Return a pointer to corresponding Page, 
+ * and store it's page table entry to *ppte.
+ * If `va` doesn't mapped to any Page, 
+ * return NULL.
+*/
+/**
+ * 寻找虚拟地址va对应的页面并将ppte指向的空间设置为二级页表项地址
+ * @param pgdir 页目录基地址
+ * @param va 虚拟地址
+ * @param ppte 二级页表项地址存放位置
+*/
 struct Page *page_lookup(Pde *pgdir, u_long va, Pte **ppte) {
 	struct Page *pp;
 	Pte *pte;
 
 	/* Step 1: Get the page table entry. */
+	/* 获取虚拟地址va对应的页表项 */
+	/* 参数create为0不允许创建新的页表 */
 	pgdir_walk(pgdir, va, 0, &pte);
 
 	/* Hint: Check if the page table entry doesn't exist or is not valid. */
+	/* 检查页表项是否存在或者无效 */
 	if (pte == NULL || (*pte & PTE_V) == 0) {
 		return NULL;
 	}
 
 	/* Step 2: Get the corresponding Page struct. */
 	/* Hint: Use function `pa2page`, defined in include/pmap.h . */
+	/* 获取页表项对应的页面结构体 */
 	pp = pa2page(*pte);
+	/* 如果ppte不为空说明调用方需要这个数据则写入 */
 	if (ppte) {
 		*ppte = pte;
 	}
@@ -420,9 +499,13 @@ struct Page *page_lookup(Pde *pgdir, u_long va, Pte **ppte) {
 /* End of Key Code "page_lookup" */
 
 /* Overview:
- *   Decrease the 'pp_ref' value of Page 'pp'.
- *   When there's no references (mapped virtual address) to this page, release it.
- */
+ * Decrease the 'pp_ref' value of Page 'pp'.
+ * When there's no references (mapped virtual address) to this page, release it.
+*/
+/**
+ * 减少页面的引用次数
+ * 如果没有引用次数则释放该页面
+*/
 void page_decref(struct Page *pp) {
 	assert(pp->pp_ref > 0);
 
@@ -434,21 +517,26 @@ void page_decref(struct Page *pp) {
 
 /* Lab 2 Key Code "page_remove" */
 // Overview:
-//   Unmap the physical page at virtual address 'va'.
+// Unmap the physical page at virtual address 'va'.
+/* 取消虚拟地址va到物理地址的映射 */
 void page_remove(Pde *pgdir, u_int asid, u_long va) {
 	Pte *pte;
 
 	/* Step 1: Get the page table entry, and check if the page table entry is valid. */
+	/* 检索虚拟地址va对应的页面 */
 	struct Page *pp = page_lookup(pgdir, va, &pte);
 	if (pp == NULL) {
 		return;
 	}
 
 	/* Step 2: Decrease reference count on 'pp'. */
+	/* 减少页面引用次数 */
 	page_decref(pp);
 
 	/* Step 3: Flush TLB. */
+	/* 清空页表项 */
 	*pte = 0;
+	/* 清空映射在TLB中的缓存 */
 	tlb_invalidate(asid, va);
 	return;
 }

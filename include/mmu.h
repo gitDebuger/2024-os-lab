@@ -8,11 +8,17 @@
 #define NASID 256 /* unknown */
 #define PAGE_SIZE 4096 /* 页面大小 */
 #define PTMAP PAGE_SIZE /* 页面大小 */
-#define PDMAP (4 * 1024 * 1024) // bytes mapped by a page directory entry 由页目录表映射的字节即页目录表的大小
-#define PGSHIFT 12 /* 页大小 log_2 对数值 */
-#define PDSHIFT 22 // log_2(PDMAP)
-#define PDX(va) ((((u_long)(va)) >> PDSHIFT) & 0x03FF) /* 虚拟地址对应的页目录项相对于相对于页目录基地址的偏移 */
-#define PTX(va) ((((u_long)(va)) >> PGSHIFT) & 0x03FF) /* 虚拟地址对应的页目录项相对于页表基地址的偏移 */
+/* bytes mapped by a page directory entry */
+/* 由页目录表映射的字节即页目录表的大小 */
+#define PDMAP (4 * 1024 * 1024)
+#define PGSHIFT 12
+#define PDSHIFT 22
+/* 获取虚拟地址va的31-22位 */
+/* 虚拟地址对应的页目录项相对于相对于页目录基地址的偏移 */
+#define PDX(va) ((((u_long)(va)) >> PDSHIFT) & 0x03FF)
+/* 获取虚拟地址va的21-12位 */
+/* 虚拟地址对应的页目录项相对于页表基地址的偏移 */
+#define PTX(va) ((((u_long)(va)) >> PGSHIFT) & 0x03FF)
 #define PTE_ADDR(pte) (((u_long)(pte)) & ~0xFFF) /* 获取页表项中的物理页帧地址 */
 #define PTE_FLAGS(pte) (((u_long)(pte)) & 0xFFF) /* 获取页表项中的标志位集合 */
 
@@ -22,7 +28,7 @@
 
 // Page Table/Directory Entry flags
 
-#define PTE_HARDFLAG_SHIFT 6 /* 硬件标志位相对于页表项的起始地址 */
+#define PTE_HARDFLAG_SHIFT 6 /* 硬件标志位偏移量 */
 
 // TLB EntryLo and Memory Page Table Entry Bit Structure Diagram.
 // entrylo.value == pte.value >> 6
@@ -46,24 +52,41 @@
 
 // Global bit. When the G bit in a TLB entry is set, that TLB entry will match solely on the VPN
 // field, regardless of whether the TLB entry’s ASID field matches the value in EntryHi.
+/* 全局位 */
+/* 若某页表项的全局位为1则TLB仅通过虚页号匹配表项而不匹配ASID */
+/* 用于映射pages和envs到用户控件 */
+/* 在Lab3中使用 */
 #define PTE_G (0x0001 << PTE_HARDFLAG_SHIFT)
 
 // Valid bit. If 0 any address matching this entry will cause a tlb miss exception (TLBL/TLBS).
+/* 有效位 */
 #define PTE_V (0x0002 << PTE_HARDFLAG_SHIFT)
 
 // Dirty bit, but really a write-enable bit. 1 to allow writes, 0 and any store using this
 // translation will cause a tlb mod exception (TLB Mod).
+/* 可写位 */
 #define PTE_D (0x0004 << PTE_HARDFLAG_SHIFT)
 
 // Cache Coherency Attributes bit.
+/* 可缓存位 */
+/* 配置对应页面的访问属性为可缓存 */
+/* 通常对于所有物理页面都配置为可缓存以允许CPU通过cache加速访问 */
 #define PTE_C_CACHEABLE (0x0018 << PTE_HARDFLAG_SHIFT)
 #define PTE_C_UNCACHEABLE (0x0010 << PTE_HARDFLAG_SHIFT)
 
 // Copy On Write. Reserved for software, used by fork.
+/* 写时复制位 */
+/* 用于实现fork的写时复制机制 */
+/* 在Lab4中使用 */
 #define PTE_COW 0x0001
 
 // Shared memmory. Reserved for software, used by fork.
+/* 共享页面位 */
+/* 用于实现管道机制 */
+/* 在Lab6中使用 */
 #define PTE_LIBRARY 0x0002
+
+/* 以上这些权限位可以使用或运算同时设定 */
 
 // Memory segments (32-bit kernel mode addresses)
 #define KUSEG 0x00000000U
