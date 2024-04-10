@@ -398,7 +398,7 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 /**
  * 将物理页面pp映射到虚拟地址va并设置页表项权限
  * @param pgdir 页目录基地址
- * @param asid unknown
+ * @param asid 操作TLB时使用
  * @param pp 页面
  * @param va 虚拟地址
  * @param perm 需要设置的权限

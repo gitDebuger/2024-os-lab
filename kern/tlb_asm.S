@@ -1,8 +1,15 @@
 #include <asm/asm.h>
+/* tlbr 以Index寄存器中的值为索引读出TLB中对应的表项到EntryHi与EntryLo中 */
+/* tlbwi 以index寄存器中的值为索引将EntryHi与EntryLo写入到TLB中对应表项 */
+/* tlbwr 将EntryHi与EntryLo写入到TLB中随机表项 */
+/* tlbp 根据EntryHi中的Key查找TLB中对应表项并将表项的索引存入Index寄存器 */
 
 LEAF(tlb_out)
 .set noreorder
+	/* 寄存器a0中存放旧表项的Key值 */
+	/* 将协处理器0寄存器CP0_ENTRYHI中的数据写入到t0通用寄存器  */
 	mfc0    t0, CP0_ENTRYHI
+	/* 将通用寄存器a0中的数据写入CP0_ENTRYHI寄存器 */
 	mtc0    a0, CP0_ENTRYHI
 	nop
 	/* Step 1: Use 'tlbp' to probe TLB entry */
@@ -11,10 +18,13 @@ LEAF(tlb_out)
 
 	nop
 	/* Step 2: Fetch the probe result from CP0.Index */
+	/* 将表项索引从CP0_INDEX存入t1 */
 	mfc0    t1, CP0_INDEX
 .set reorder
+	/* 如果不存在对应的表项 */
 	bltz    t1, NO_SUCH_ENTRY
 .set noreorder
+	/* 如果存在对应的表项执行无效化操作 */
 	mtc0    zero, CP0_ENTRYHI
 	mtc0    zero, CP0_ENTRYLO0
 	mtc0    zero, CP0_ENTRYLO1
@@ -26,6 +36,7 @@ LEAF(tlb_out)
 .set reorder
 
 NO_SUCH_ENTRY:
+	/* 恢复CP0_ENTRYHI的值 */
 	mtc0    t0, CP0_ENTRYHI
 	j       ra
 END(tlb_out)
