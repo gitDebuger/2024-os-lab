@@ -152,6 +152,8 @@ typedef u_long Pde; /* 页目录项 page directory entry */
 typedef u_long Pte; /* 页表项 page table entry */
 
 /* 从内核虚拟地址转化为物理地址 */
+/* 返回虚拟地址x所对应物理地址 */
+/* 要求x必须是kseg0段虚拟地址 */
 #define PADDR(kva)                                                                                 \
 	({                                                                                         \
 		u_long _a = (u_long)(kva);                                                         \

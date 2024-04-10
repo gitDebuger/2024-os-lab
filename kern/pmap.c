@@ -6,20 +6,73 @@
 #include <printk.h>
 
 /* These variables are set by mips_detect_memory(ram_low_size); */
+/* 通过mips_detect_memory(ram_low_size)函数设置 */
+/* 最大物理可用内存 */
 static u_long memsize; /* Maximum physical address */
+/* 可用内存页面数 */
 u_long npage;	       /* Amount of memory(in pages) */
 
+/* typedef u_long Pde */
+/* Pde -> Page directory entry */
+/* 当前页目录指针 */
 Pde *cur_pgdir;
 
+/*
+#define LIST_ENTRY(type) \
+	struct { \
+		struct type *le_next; \
+		struct type **le_prev; \
+	}
+typedef LIST_ENTRY(Page) Page_LIST_entry_t;
+struct Page {
+	Page_LIST_entry_t pp_link;
+	u_short pp_ref;
+};
+完整的结构体定义为
+struct Page {
+	struct {
+		struct Page *le_next;
+		struct Page **le_prev;
+	} pp_link;
+	u_short pp_ref;
+};
+*/
+
+/* 页面链表节点结构体指针 */
 struct Page *pages;
+/* 空闲内存空间大小 */
 static u_long freemem;
 
+/*
+#define LIST_HEAD(name, type) \
+	struct name { \
+		struct type *lh_first; \
+	}
+LIST_HEAD(Page_list, Page);
+这个宏定义了这样的一个结构体
+struct Page_list {
+	struct Page *lh_first;
+}
+展开后是这样的内容
+struct Page_list {
+	struct {
+		struct {
+			struct Page *le_next;
+			struct Page **le_prev;
+		} pplink;
+		u_short pp_ref;
+	} *lh_first;
+}
+*/
+
+/* 空闲物理页面链表 */
 struct Page_list page_free_list; /* Free list of physical pages */
 
 /* Overview:
  *   Use '_memsize' from bootloader to initialize 'memsize' and
  *   calculate the corresponding 'npage' value.
  */
+/* 利用传入的内存空间大小信息初始化memsize变量和npage变量 */
 void mips_detect_memory(u_int _memsize) {
 	/* Step 1: Initialize memsize. */
 	memsize = _memsize;
@@ -32,52 +85,97 @@ void mips_detect_memory(u_int _memsize) {
 
 /* Lab 2 Key Code "alloc" */
 /* Overview:
-    Allocate `n` bytes physical memory with alignment `align`, if `clear` is set, clear the
-    allocated memory.
-    This allocator is used only while setting up virtual memory system.
-   Post-Condition:
-    If we're out of memory, should panic, else return this address of memory we have allocated.*/
+ * Allocate `n` bytes physical memory with alignment `align`, if `clear` is set, 
+ * clear the allocated memory.
+ * This allocator is used only while setting up virtual memory system.
+ * Post-Condition:
+ * If we're out of memory, should panic, else return this address of memory we have allocated.
+ */
+/*
+ * 分配 `n` 字节的物理内存使用 `align` 对齐方式
+ * 如果设置 `clear` 则清空已分配的内存
+ * 此分配器仅在设置虚拟内存系统时使用
+ * 也就是仅在建立页式虚拟内存管理机制之前使用
+ * 后置条件：
+ * 如果内存不足应该触发 `panic` 否则返回分配的内存地址
+ */
+/**
+ * @param n 要分配的内存空间大小
+ * @param align 对齐方式——按照align字节对齐
+ * @param clear 是否清空内存
+*/
 void *alloc(u_int n, u_int align, int clear) {
+	/* 外部end变量 */
+	/* 在kernel.lds中有定义 */
 	extern char end[];
+	/* 保存分配的内存地址 */
 	u_long alloced_mem;
 
 	/* Initialize `freemem` if this is the first time. The first virtual address that the
 	 * linker did *not* assign to any kernel code or global variables. */
+	/* freemem定义为全局变量且已经初始化为0 */
+	/* 如果值为0说明是第一次分配内存 */
+	/* 则需要设置为内存结束地址end */
+	/* 也就是链接器没有分配给任何内核代码或者全局变量的起始虚拟内存地址 */
 	if (freemem == 0) {
-		freemem = (u_long)end; // end
+		freemem = (u_long)end;
 	}
 
 	/* Step 1: Round up `freemem` up to be aligned properly */
+	/* 将freemem向上舍入到与align对齐的地址以确保内存分配满足对齐要求。 */
 	freemem = ROUND(freemem, align);
 
 	/* Step 2: Save current value of `freemem` as allocated chunk. */
+	/* 将当前的freemem值保存到alloced_mem中以便后续返回分配的内存地址。 */
 	alloced_mem = freemem;
 
 	/* Step 3: Increase `freemem` to record allocation. */
+	/* 将freemem增加n以记录已分配的内存。 */
 	freemem = freemem + n;
 
-	// Panic if we're out of memory.
+	/* Panic if we're out of memory. */
+	/* 如果已经超出了可用内存大小memsize则触发 panic。 */
 	panic_on(PADDR(freemem) >= memsize);
 
 	/* Step 4: Clear allocated chunk if parameter `clear` is set. */
+	/* 如果需要清空内存就使用memset函数将分配的内存清零。 */
 	if (clear) {
 		memset((void *)alloced_mem, 0, n);
 	}
 
 	/* Step 5: return allocated chunk. */
+	/* 返回已分配的内存地址 */
 	return (void *)alloced_mem;
 }
+/**
+ * low ------------------------------------------------> high
+ * [] [][][][][] [][][][][] [][][][][][][][][][] [][][][][][]
+ *   ^          ^          ^                    ^
+ *  end      freemem   ROUND(freemem, align)  freemem += n
+ *                                 └─> allocaed_mem
+*/
+/* 该代码操作kseg0段虚拟内存 */
+/* 通过Lab2的内存管理工作使将来kuseg段虚拟内存能够正常使用 */
 /* End of Key Code "alloc" */
 
-/* Overview:
-    Set up two-level page table.
-   Hint:
-    You can get more details about `UPAGES` and `UENVS` in include/mmu.h. */
+/** Overview:
+ * Set up two-level page table.
+ * Hint:
+ * You can get more details about `UPAGES` and `UENVS` 
+ * in include/mmu.h.
+*/
+/* 建立两级页表管理机制 */
 void mips_vm_init() {
 	/* Allocate proper size of physical memory for global array `pages`,
 	 * for physical memory management. Then, map virtual address `UPAGES` to
 	 * physical address `pages` allocated before. For consideration of alignment,
 	 * you should round up the memory size before map. */
+	/**
+	 * 首先申请合适大小的物理内存空间分配给全局数组pages用于物理内存管理
+	 * 然后将虚拟地址UPAGES映射到刚才申请的物理地址pages上
+	 * 考虑到内存对齐需要在映射前将内存空间大小向上对齐
+	 * 也就是说按页面大小PAGE_SIZE对齐申请内存空间用于存储Pages结构体数组
+	*/
 	pages = (struct Page *)alloc(npage * sizeof(struct Page), PAGE_SIZE, 1);
 	printk("to memory %x for struct Pages.\n", freemem);
 	printk("pmap.c:\t mips vm init success\n");
@@ -89,30 +187,49 @@ void mips_vm_init() {
  *
  * Hint: Use 'LIST_INSERT_HEAD' to insert free pages to 'page_free_list'.
  */
+/**
+ * 初始化页面结构体和空闲内存链表
+ * 每个物理页框都对应一个Page结构体
+ * 页面结构体中包含引用计数pp_ref成员变量
+ * 所有的空闲页面保存在一个链表中
+*/
 void page_init(void) {
 	/* Step 1: Initialize page_free_list. */
 	/* Hint: Use macro `LIST_INIT` defined in include/queue.h. */
 	/* Exercise 2.3: Your code here. (1/4) */
+	/* 初始化空闲页面链表 */
 	LIST_INIT(&page_free_list);
 
 	/* Step 2: Align `freemem` up to multiple of PAGE_SIZE. */
 	/* Exercise 2.3: Your code here. (2/4) */
+	/* 将空闲内存地址按照页面大小向上对齐 */
 	freemem = ROUND(freemem, PAGE_SIZE);
 
 	/* Step 3: Mark all memory below `freemem` as used (set `pp_ref` to 1) */
 	/* Exercise 2.3: Your code here. (3/4) */
+	/* 将低于freemem地址的页面标记为已使用 */
+	/* 通过将引用计数设置为1完成 */
+
+	/* freemem是第一个空闲页面的起始地址 */
+	/* PADDR(freemem)返回该物理地址对应的物理页框号 */
+	/* 也就是说物理页框号小于count的物理页框都已经被使用 */
 	u_long count = PPN(PADDR(freemem));
+	/* 循环将引用设置为1标记为已使用 */
 	for (u_long i = 0; i < count; ++i) {
 		pages[i].pp_ref = 1;
 	}
 
 	/* Step 4: Mark the other memory as free. */
 	/* Exercise 2.3: Your code here. (4/4) */
+	/* 标记其他内存空间为未使用 */
+
+	/* 从第一个空闲页面开始到到最后一个页面 */
+	/* 循环将页面引用计数设置为0表示未使用 */
+	/* 然后将这些空闲页面插入到空闲页面链表中 */
 	for (u_long i = count; i < npage; ++i) {
 		pages[i].pp_ref = 0;
 		LIST_INSERT_HEAD(&page_free_list, &pages[i], pp_link);
 	}
-
 }
 
 /* Overview:
