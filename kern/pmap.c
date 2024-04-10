@@ -547,7 +547,7 @@ struct Page_list buddy_free_list[2];
 
 #define BUDDYS_COUNT ((BUDDY_PAGE_END - BUDDY_PAGE_BASE) / PAGE_SIZE / 2)
 
-struct Page* buddys[BUDDYS_COUNT][2];
+struct Page* buddys[BUDDYS_COUNT];
 
 void buddy_init() {
 	LIST_INIT(&buddy_free_list[0]);
@@ -573,15 +573,15 @@ int buddy_alloc(u_int size, struct Page **new) {
 			LIST_REMOVE(buddy0, pp_link);
 			struct Page *buddy1 = buddy0 + 1;
 			int index = (page2pa(buddy0) - BUDDY_PAGE_BASE) / PAGE_SIZE / 2;
-			buddys[index][1] = buddy1;
+			buddys[index] = buddy1;
 			*new = buddy0;
 			LIST_INSERT_HEAD(&buddy_free_list[0], buddy1, pp_link);
 			return 1;
 		} else {
 			struct Page *pp = LIST_FIRST(&buddy_free_list[0]);
 			LIST_REMOVE(pp, pp_link);
-			int pre_index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE;
-			buddys[pre_index / 2][pre_index & 1] = NULL;
+			int index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE / 2;
+			buddys[index] = NULL;
 			*new = pp;
 			return 1;
 		}
@@ -599,27 +599,20 @@ int buddy_alloc(u_int size, struct Page **new) {
 void buddy_free(struct Page *pp, int npp) {
 	/* Your Code Here (2/2) */
 	if (npp == 1) {
-		int pre_index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE;
-		if ((pre_index & 1) == 0) {
-			struct Page *other = buddys[pre_index / 2][1];
-			if (other != NULL) {
-				buddys[pre_index / 2][1] = NULL;
-				LIST_REMOVE(other, pp_link);
+		int double_index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE;
+		int index = double_index / 2;
+		struct Page *other = buddys[index];
+		if (other != NULL) {
+			LIST_REMOVE(other, pp_link);
+			buddys[index] = NULL;
+			if ((double_index & 1) == 0) {
 				LIST_INSERT_HEAD(&buddy_free_list[1], pp, pp_link);
 			} else {
-				buddys[pre_index / 2][0] = pp;
-				LIST_INSERT_HEAD(&buddy_free_list[0], pp, pp_link);
+				LIST_INSERT_HEAD(&buddy_free_list[1], other, pp_link);
 			}
 		} else {
-			struct Page *other = buddys[pre_index / 2][0];
-			if (other != NULL) {
-				buddys[pre_index / 2][0] = NULL;
-				LIST_REMOVE(other, pp_link);
-				LIST_INSERT_HEAD(&buddy_free_list[1], other, pp_link);
-			} else {
-				buddys[pre_index / 2][1] = pp;
-				LIST_INSERT_HEAD(&buddy_free_list[0], pp, pp_link);
-			}
+			LIST_INSERT_HEAD(&buddy_free_list[0], pp, pp_link);
+			buddys[index] = pp;
 		}
 	} else {
 		LIST_INSERT_HEAD(&buddy_free_list[1], pp, pp_link);
