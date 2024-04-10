@@ -4,6 +4,7 @@
 #include <mmu.h>
 #include <pmap.h>
 #include <printk.h>
+#include <buddy.h>
 
 /* These variables are set by mips_detect_memory(ram_low_size); */
 /* 通过mips_detect_memory(ram_low_size)函数设置 */
@@ -541,6 +542,89 @@ void page_remove(Pde *pgdir, u_int asid, u_long va) {
 	return;
 }
 /* End of Key Code "page_remove" */
+
+struct Page_list buddy_free_list[2];
+
+#define BUDDYS_COUNT ((BUDDY_PAGE_END - BUDDY_PAGE_BASE) / PAGE_SIZE / 2)
+
+struct Page* buddys[BUDDYS_COUNT][2];
+
+void buddy_init() {
+	LIST_INIT(&buddy_free_list[0]);
+	LIST_INIT(&buddy_free_list[1]);
+	for (int i = BUDDY_PAGE_BASE; i < BUDDY_PAGE_END; i += PAGE_SIZE) {
+		struct Page *pp = pa2page(i);
+		LIST_REMOVE(pp, pp_link);
+	}
+	for (int i = BUDDY_PAGE_BASE; i < BUDDY_PAGE_END; i += 2 * PAGE_SIZE) {
+		struct Page *pp = pa2page(i);
+		LIST_INSERT_HEAD(&buddy_free_list[1], pp, pp_link);
+	}
+}
+
+int buddy_alloc(u_int size, struct Page **new) {
+	/* Your Code Here (1/2) */
+	if (size <= PAGE_SIZE) {
+		if (LIST_EMPTY(&buddy_free_list[0])) {
+			if (LIST_EMPTY(&buddy_free_list[1])) {
+				return -E_NO_MEM;
+			}
+			struct Page *buddy0 = LIST_FIRST(&buddy_free_list[1]);
+			LIST_REMOVE(buddy0, pp_link);
+			struct Page *buddy1 = buddy0 + 1;
+			int index = (page2pa(buddy0) - BUDDY_PAGE_BASE) / PAGE_SIZE / 2;
+			buddys[index][1] = buddy1;
+			*new = buddy0;
+			LIST_INSERT_HEAD(&buddy_free_list[0], buddy1, pp_link);
+			return 1;
+		} else {
+			struct Page *pp = LIST_FIRST(&buddy_free_list[0]);
+			LIST_REMOVE(pp, pp_link);
+			int pre_index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE;
+			buddys[pre_index / 2][pre_index & 1] = NULL;
+			*new = pp;
+			return 1;
+		}
+	} else {
+		if (LIST_EMPTY(&buddy_free_list[1])) {
+			return -E_NO_MEM;
+		}
+		struct Page *pp = LIST_FIRST(&buddy_free_list[1]);
+		LIST_REMOVE(pp, pp_link);
+		*new = pp;
+		return 2;
+	}	
+}
+
+void buddy_free(struct Page *pp, int npp) {
+	/* Your Code Here (2/2) */
+	if (npp == 1) {
+		int pre_index = (page2pa(pp) - BUDDY_PAGE_BASE) / PAGE_SIZE;
+		if ((pre_index & 1) == 0) {
+			struct Page *other = buddys[pre_index / 2][1];
+			if (other != NULL) {
+				buddys[pre_index / 2][1] = NULL;
+				LIST_REMOVE(other, pp_link);
+				LIST_INSERT_HEAD(&buddy_free_list[1], pp, pp_link);
+			} else {
+				buddys[pre_index / 2][0] = pp;
+				LIST_INSERT_HEAD(&buddy_free_list[0], pp, pp_link);
+			}
+		} else {
+			struct Page *other = buddys[pre_index / 2][0];
+			if (other != NULL) {
+				buddys[pre_index / 2][0] = NULL;
+				LIST_REMOVE(other, pp_link);
+				LIST_INSERT_HEAD(&buddy_free_list[1], other, pp_link);
+			} else {
+				buddys[pre_index / 2][1] = pp;
+				LIST_INSERT_HEAD(&buddy_free_list[0], pp, pp_link);
+			}
+		}
+	} else {
+		LIST_INSERT_HEAD(&buddy_free_list[1], pp, pp_link);
+	}
+}
 
 void physical_memory_manage_check(void) {
 	struct Page *pp, *pp0, *pp1, *pp2;
