@@ -7,7 +7,7 @@
 
 // clang-format off
 .macro RESET_KCLOCK
-	li 	t0, TIMER_INTERVAL
+	li 	 t0, TIMER_INTERVAL
 	/*
 	 * Hint:
 	 *   Use 'mtc0' to write an appropriate value into the CP0_COUNT and CP0_COMPARE registers.
@@ -17,6 +17,8 @@
 	 *
 	 */
 	/* Exercise 3.11: Your code here. */
+	mtc0 zero, CP0_COUNT
+	mtc0 t0, CP0_COMPARE
 
 .endm
 // clang-format on
