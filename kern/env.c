@@ -6,16 +6,30 @@
 #include <printk.h>
 #include <sched.h>
 
+/* 所有进程控制块 */
 struct Env envs[NENV] __attribute__((aligned(PAGE_SIZE))); // All environments
 
+/* 当前进程控制块指针 */
+/* 初始化为空指针 */
 struct Env *curenv = NULL;	      // the current env
+/* 空闲进程控制块链表 */
 static struct Env_list env_free_list; // Free list
 
 // Invariant: 'env' in 'env_sched_list' iff. 'env->env_status' is 'RUNNABLE'.
+/* 可运行进程控制块链表 */
+/* env_sched_list 中的进程控制块的状态为可运行 */
 struct Env_sched_list env_sched_list; // Runnable list
 
+/* 页目录基地址 */
 static Pde *base_pgdir;
 
+/* 用于管理地址空间标识符 ASID 的位图 */
+/* 位图说明这是一个状压数组 */
+/* 读写相关信息时需要通过位运算 */
+/* 该位于用于跟踪哪些 ASID 已经被分配给进程 */
+/* 哪些尚未被分配 */
+/* 该位图最初没有任何 ASID 被使用 */
+/* vector<bit>(NSID / 32) */
 static uint32_t asid_bitmap[NASID / 32] = {0};
 
 /* Overview:
@@ -25,16 +39,30 @@ static uint32_t asid_bitmap[NASID / 32] = {0};
  *   return 0 and set '*asid' to the allocated ASID on success.
  *   return -E_NO_FREE_ENV if no ASID is available.
  */
+/**
+ * 申请一个没有被使用的 ASID
+ * 如果申请成功则返回 0 并将 *asid 设置为申请到的 ASID 值
+ * 否则返回 -E_NO_FREE_ENV 错误码
+*/
 static int asid_alloc(u_int *asid) {
+	/* 从 0 到 NASID - 1 循环 */
+	/* 也就是说将找到的第一个未分配的 ASID 分配给新创建的进程 */
 	for (u_int i = 0; i < NASID; ++i) {
+		/* 高位表示在状压数组中的 index */
 		int index = i >> 5;
+		/* 低 5 位表示在元素中的具体位置 */
 		int inner = i & 31;
+		/* 如果当前 ASID 未使用 */
 		if ((asid_bitmap[index] & (1 << inner)) == 0) {
+			/* 将当前 ASID 的状态设置为已使用 */
 			asid_bitmap[index] |= 1 << inner;
+			/* 将 *asid 设置为当前 ASID 值 */
 			*asid = i;
+			/* 返回 0 表示申请成功 */
 			return 0;
 		}
 	}
+	/* 所有 ASID 都已经被使用则返回错误码 -E_NO_FREE_ENV */
 	return -E_NO_FREE_ENV;
 }
 
@@ -47,6 +75,11 @@ static int asid_alloc(u_int *asid) {
  * Post-Condition:
  *  The ASID is freed and may be allocated again later.
  */
+/**
+ * 释放当前 ASID 即将当前 ASID 标记为空闲
+ * 当前 ASID 是使用 asid_alloc 函数申请到的
+ * 当前 ASID 被标记为空闲后可能在后续程序中再次被申请
+*/
 static void asid_free(u_int i) {
 	int index = i >> 5;
 	int inner = i & 31;
@@ -60,13 +93,21 @@ static void asid_free(u_int i) {
  * Pre-Condition:
  *   'pa', 'va' and 'size' are aligned to 'PAGE_SIZE'.
  */
+/**
+ * 将 [va, va + size) 的虚拟地址空间映射到 [pa, pa + size) 的物理地址空间
+ * 页表项权限设置为 perm | PTE_V
+ * 前置条件
+ * `pa` `va` `size` 均已经按照 PAGE_SIZE 对齐
+*/
 static void map_segment(Pde *pgdir, u_int asid, u_long pa, u_long va, u_int size, u_int perm) {
 
+	/* 确保三个变量已经按照 PAGE_SIZE 对齐 */
 	assert(pa % PAGE_SIZE == 0);
 	assert(va % PAGE_SIZE == 0);
 	assert(size % PAGE_SIZE == 0);
 
 	/* Step 1: Map virtual address space to physical address space. */
+	/* 逐页将虚拟地址空间映射到物理地址空间 */
 	for (int i = 0; i < size; i += PAGE_SIZE) {
 		/*
 		 * Hint:
@@ -74,6 +115,7 @@ static void map_segment(Pde *pgdir, u_int asid, u_long pa, u_long va, u_int size
 		 *  Use 'pa2page' to get the 'struct Page *' of the physical address.
 		 */
 		/* Exercise 3.2: Your code here. */
+		/* 使用 page_insert 函数完成映射 */
 		page_insert(pgdir, asid, pa2page(pa + i), va + i, perm);
 	}
 }
@@ -139,11 +181,18 @@ int envid2env(u_int envid, struct Env **penv, int checkperm) {
  * Hints:
  *   You may use these macro definitions below: 'LIST_INIT', 'TAILQ_INIT', 'LIST_INSERT_HEAD'
  */
+/**
+ * 将 envs 中的所有进程控制块设置为空闲并将它们插入 env_free_list 空闲链表中
+ * 插入时采用倒序插入方式
+ * 也就是倒序遍历数组插入链表
+ * 这样第一次调用 env_alloc 时返回的是 envs[0] 对应的进程控制块
+*/
 void env_init(void) {
 	int i;
 	/* Step 1: Initialize 'env_free_list' with 'LIST_INIT' and 'env_sched_list' with
 	 * 'TAILQ_INIT'. */
 	/* Exercise 3.1: Your code here. (1/2) */
+	/* 使用 LIST_INIT 和 TAILQ_INIT 宏初始化 env_free_list 链表和 env_sched_list 链表 */
 	LIST_INIT(&env_free_list);
 	TAILQ_INIT(&env_sched_list);
 

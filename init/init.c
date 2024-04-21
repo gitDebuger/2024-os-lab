@@ -49,9 +49,11 @@ void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 	page_init();
 
 	// lab3:
+	/* 进程控制初始化 */
 	env_init();
 
 	// lab3:
+	/* 手动创建了两个进程 */
 	ENV_CREATE_PRIORITY(user_bare_loop, 1);
 	ENV_CREATE_PRIORITY(user_bare_loop, 2);
 
@@ -69,6 +71,11 @@ void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 	// ENV_CREATE(user_devtst);
 
 	// lab3:
+	// 2023 codes:
+	// kclock_init();
+	// enable_irq();
+	// while (1) {}
+	
 	schedule(0);
 }
 

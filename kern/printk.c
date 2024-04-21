@@ -25,12 +25,13 @@ void printk(const char *fmt, ...) {
 }
 /* End of Key Code "printk" */
 
-/* 所属模块为进程管理 */
-/* 暂时不需要了解 */
+/* 打印 Trapframe 结构体的信息 */
 void print_tf(struct Trapframe *tf) {
+	/* 打印 32 个通用寄存器的信息 */
 	for (int i = 0; i < sizeof(tf->regs) / sizeof(tf->regs[0]); i++) {
 		printk("$%2d = %08x\n", i, tf->regs[i]);
 	}
+	/* 打印特殊寄存器的信息 */
 	printk("HI  = %08x\n", tf->hi);
 	printk("LO  = %08x\n\n", tf->lo);
 	printk("CP0.SR    = %08x\n", tf->cp0_status);
