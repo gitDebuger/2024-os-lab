@@ -16,6 +16,12 @@
 	 *   CP0_COMPARE registers are equal, the timer interrupt will be triggered.
 	 *
 	 */
+	/**
+	 * 使用 mtc0 向 CP0_COUNT 寄存器和 CP0_COMPARE 寄存器写入正确的值
+	 * 向 CP0_COMPARE 寄存器写入将会重置时钟中断
+	 * CP0_COUNT 寄存器以固定的频率递增
+	 * 当 CP0_COUNT 和 CP0_COMPARE 寄存器的值相等时将触发时钟中断。
+	*/
 	/* Exercise 3.11: Your code here. */
 	mtc0 zero, CP0_COUNT
 	mtc0 t0, CP0_COMPARE

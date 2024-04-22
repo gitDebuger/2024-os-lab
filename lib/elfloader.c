@@ -50,7 +50,7 @@ int elf_load_seg(Elf32_Phdr *ph, const void *bin, elf_mapper_t map_page, void *d
 	}
 
 	/* Step 1: load all content of bin into memory. */
-	/* 接着处理数据中间完整的部分 */
+	/* 接着处理数据后面的部分 */
 	/* 通过循环不断将数据加载到页上。 */
 	for (i = offset ? MIN(bin_size, PAGE_SIZE - offset) : 0; i < bin_size; i += PAGE_SIZE) {
 		if ((r = map_page(data, va + i, 0, perm, bin + i, MIN(bin_size - i, PAGE_SIZE))) !=
