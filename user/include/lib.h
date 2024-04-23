@@ -8,9 +8,13 @@
 #include <syscall.h>
 #include <trap.h>
 
+/* Lab3 中我们将页控制块数组和进程控制块数组映射到用户虚拟地址空间的某一位置 */
+/* 映射工作在 kern/env.c/env_setup_vm() 中完成 */
 #define vpt ((const volatile Pte *)UVPT)
 #define vpd ((const volatile Pde *)(UVPT + (PDX(UVPT) << PGSHIFT)))
+/* 这里 envs 就是映射到的用户虚拟地址 */
 #define envs ((const volatile struct Env *)UENVS)
+/* 同理还有 pages */
 #define pages ((const volatile struct Page *)UPAGES)
 
 // libos
