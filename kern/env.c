@@ -711,11 +711,7 @@ void env_stat(struct Env *e, u_int *pri, u_int *scheds, u_int *runs, u_int *cloc
 	*pri = e->env_pri;
 	*runs = e->env_runs;
 	*scheds = e->env_ipc_value;
-	if (e->env_runs != 0) {
-		*clocks = (u_int)(((struct Trapframe *)KSTACKTOP - 1)->cp0_clock);
-	} else {
-		*clocks = 0;
-	}
+	*clocks = e->env_ipc_from;
 }
 
 void env_check() {
