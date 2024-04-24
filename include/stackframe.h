@@ -30,6 +30,8 @@
 	sw      k0, TF_HI(sp)
 	mflo    k0
 	sw      k0, TF_LO(sp)
+	mfc0    k0, CP0_COUNT
+	sw      k0, TF_CLOCK(sp)
 	sw      $0, TF_REG0(sp)
 	sw      $1, TF_REG1(sp)
 	sw      $2, TF_REG2(sp)
