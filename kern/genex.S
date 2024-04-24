@@ -61,3 +61,4 @@ BUILD_HANDLER sys do_syscall
 
 /* 处理保留异常 */
 BUILD_HANDLER reserved do_reserved
+BUILD_HANDLER ri do_ri
