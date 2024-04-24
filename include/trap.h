@@ -34,6 +34,7 @@ struct Trapframe {
 	/* 最近一次发生异常时的指令地址 */
 	/* 异常程序计数器 */
 	unsigned long cp0_epc;
+	/* CP0_COUNT 寄存器 */
 	unsigned long cp0_clock;
 };
 
@@ -101,6 +102,7 @@ void print_tf(struct Trapframe *tf);
 #define TF_CAUSE ((TF_BADVADDR) + 4)
 /* EPC 寄存器 */
 #define TF_EPC ((TF_CAUSE) + 4)
+/* CP0_COUNT 寄存器累加值 */
 #define TF_CLOCK ((TF_EPC) + 4)
 /**
  * Size of stack frame, word/double word alignment

@@ -708,9 +708,13 @@ void env_run(struct Env *e) {
 }
 
 void env_stat(struct Env *e, u_int *pri, u_int *scheds, u_int *runs, u_int *clocks) {
+	/* 进程优先级 */
 	*pri = e->env_pri;
+	/* 进程运行次数 */
 	*runs = e->env_runs;
+	/* 进程调度次数 */
 	*scheds = e->env_ipc_value;
+	/* 进程 CP0_COUNT 寄存器累加值 */
 	*clocks = e->env_ipc_from;
 }
 

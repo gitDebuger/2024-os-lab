@@ -30,8 +30,10 @@
 	sw      k0, TF_HI(sp)
 	mflo    k0
 	sw      k0, TF_LO(sp)
+	/* 保存 CP0_COUNT 寄存器的值到 (struct Trapframe).cp0_clock 中 */
 	mfc0    k0, CP0_COUNT
 	sw      k0, TF_CLOCK(sp)
+	/* 保存完成 */
 	sw      $0, TF_REG0(sp)
 	sw      $1, TF_REG1(sp)
 	sw      $2, TF_REG2(sp)
