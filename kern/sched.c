@@ -72,9 +72,5 @@ void schedule(int yield) {
 		count = e->env_pri;
 	}
 	count--;
-	if (e->env_runs != 0)
-		e->env_ipc_from = ((struct Trapframe *)KSTACKTOP - 1)->cp0_clock;
-	else
-		e->env_ipc_from = 0;
 	env_run(e);
 }
