@@ -10,7 +10,9 @@ extern void handle_tlb(void);
 extern void handle_sys(void);
 extern void handle_mod(void);
 extern void handle_reserved(void);
+/* Begin Statement 1 */
 extern void handle_ri(void);
+/* End Statement 1 */
 
 /* 异常向量组 */
 /* 存放了异常处理函数的地址 */
@@ -21,7 +23,9 @@ void (*exception_handlers[32])(void) = {
     [0] = handle_int,
     /* TLB 异常使用 handle_tlb */
     [2 ... 3] = handle_tlb,
+	/* Begin Statement 2 */
     [10] = handle_ri,
+	/* End Statement 2 */
 #if !defined(LAB) || LAB >= 4
     [1] = handle_mod,
     [8] = handle_sys,
@@ -41,6 +45,7 @@ void do_reserved(struct Trapframe *tf) {
 	panic("Unknown ExcCode %2d", (tf->cp0_cause >> 2) & 0x1f);
 }
 
+/* Begin Statement 3 */
 void do_ri(struct Trapframe *tf) {
 	u_int x = *((u_int *)(tf->cp0_epc));
 	u_int high = x >> 26;
@@ -85,3 +90,4 @@ void do_ri(struct Trapframe *tf) {
 
 	tf->cp0_epc += 4;
 }
+/* End Statement 3 */
