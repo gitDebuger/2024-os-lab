@@ -68,12 +68,15 @@ void schedule(int yield) {
 			panic("schedule: no runnable envs");
 		}
 		e = TAILQ_FIRST(&env_sched_list);
+		/* Begin */
 		/* 复用 env_ipc_value 为调度次数计数器 */
 		/* 在发生进程调度时自增 1 */
 		e->env_ipc_value++;
+		/* End */
 		count = e->env_pri;
 	}
 	count--;
+	/* Begin */
 	/* 复用 env_ipc_from 为 CP0_COUNT 寄存器在每次时钟中断时的累加值 */
 	if (e->env_runs == 0) {
 		/* 未运行过初始化为 0 */
@@ -82,5 +85,6 @@ void schedule(int yield) {
 		/* 此后每次调度累加 CP0_COUNT 寄存器的值 */
 		e->env_ipc_from += ((struct Trapframe *)KSTACKTOP - 1)->cp0_clock;
 	}
+	/* End */
 	env_run(e);
 }
