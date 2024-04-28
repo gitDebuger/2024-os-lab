@@ -54,8 +54,8 @@ void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 
 	// lab3:
 	/* 手动创建了两个进程 */
-	ENV_CREATE_PRIORITY(user_bare_loop, 1);
-	ENV_CREATE_PRIORITY(user_bare_loop, 2);
+	// ENV_CREATE_PRIORITY(user_bare_loop, 1);
+	// ENV_CREATE_PRIORITY(user_bare_loop, 2);
 
 	// lab4:
 	ENV_CREATE(user_tltest);
