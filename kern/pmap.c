@@ -330,8 +330,6 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	/* Exercise 2.6: Your code here. (1/3) */
 	/* 页目录项地址等于页目录基地址加上虚拟地址va对应的偏移量 */
 	pgdir_entryp = pgdir + PDX(va);
-	/* 获取页目录项的值 */
-	Pde pgdir_entry_data = *pgdir_entryp;
 
 	/* Step 2: If the corresponding page table is not existent (valid) then:
 	 *   * If parameter `create` is set, create one. Set the permission bits 'PTE_C_CACHEABLE |
@@ -345,25 +343,14 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	/* Why using *pgdir_entryp instead of perm? */
 	/* 获取有效位的信息 */
 	/* 如果对应页目录项无效 */
-	if ((pgdir_entry_data & PTE_V) == 0) {
-		/* 如果允许创建 */
+	if (!(*pgdir_entryp & PTE_V)) {
 		if (create) {
-			/* 调用page_alloc函数申请新的页面到pp中用于存储新的页表 */
-			int return_code = page_alloc(&pp);
-			/* 申请失败则返回错误码 */
-			if (return_code == -E_NO_MEM) {
+			if (page_alloc(&pp) != 0) {
 				return -E_NO_MEM;
 			}
-			/* Why increase pp_ref instead of setting pp_ref to 1? */
-			/* 增加引用计数 */
-			++(pp->pp_ref);
-			/* Why? */
-			/* 将新申请的页面的物理地址以及权限位写入到页目录项中 */
-			/* page2pa(pp)代表物理页表基地址？ */
-			*pgdir_entryp = page2pa(pp) | (PTE_C_CACHEABLE | PTE_V);
-			pgdir_entry_data = *pgdir_entryp;
+			pp->pp_ref++;
+			*pgdir_entryp = page2pa(pp) | PTE_C_CACHEABLE | PTE_V;
 		} else {
-			/* 如果不允许创建则将*ppte设置为NULL */
 			*ppte = NULL;
 			return 0;
 		}
@@ -376,7 +363,7 @@ static int pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte) {
 	/* PTE_ADDR(pgdir_entry_data)从页目录项中解析出页表基地址 */
 	/* 再调用KADDR将页表基地址转换为内核虚拟地址 */
 	/* 然后强制类型转换赋值给pgtable作为页表基地址 */
-	Pte *pgtable = (Pte *)KADDR(PTE_ADDR(pgdir_entry_data));
+	Pte *pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));
 	/* 页表基地址加上虚拟地址va对应的偏移量 */
 	*ppte = pgtable + PTX(va);
 
@@ -438,9 +425,7 @@ int page_insert(Pde *pgdir, u_int asid, struct Page *pp, u_long va, u_int perm) 
 	/* Exercise 2.7: Your code here. (2/3) */
 	/* 再次获取页表项 */
 	/* 这次create参数为1允许创建新的页表 */
-	int return_code = pgdir_walk(pgdir, va, 1, &pte);
-	/* 失败返回错误码 */
-	if (return_code == -E_NO_MEM) {
+	if (pgdir_walk(pgdir, va, 1, &pte) != 0) {
 		return -E_NO_MEM;
 	}
 
@@ -450,7 +435,7 @@ int page_insert(Pde *pgdir, u_int asid, struct Page *pp, u_long va, u_int perm) 
 	/* 插入页面到页表项中 */
 	*pte = page2pa(pp) | perm | PTE_C_CACHEABLE | PTE_V;
 	/* 增加页面的引用计数 */
-	++(pp->pp_ref);
+	pp->pp_ref++;
 
 	return 0;
 }

@@ -179,7 +179,7 @@ int envid2env(u_int envid, struct Env **penv, int checkperm) {
 		*penv = curenv;
 		return 0;
 	} else {
-		e = &envs[ENVX(envid)];
+		e = envs + ENVX(envid);
 	}
 
 	if (e->env_status == ENV_FREE || e->env_id != envid) {
@@ -199,10 +199,8 @@ int envid2env(u_int envid, struct Env **penv, int checkperm) {
 	 * 如果不满足条件则返回 -E_BAD_ENV
 	*/
 	/* Exercise 4.3: Your code here. (2/2) */
-	if (checkperm != 0) {
-		if (e->env_id != curenv->env_id && e->env_parent_id != curenv->env_id) {
-			return -E_BAD_ENV;
-		}
+	if (checkperm && e->env_id != curenv->env_id && e->env_parent_id != curenv->env_id) {
+		return -E_BAD_ENV;
 	}
 
 	/* Step 3: Assign 'e' to '*penv'. */
@@ -243,7 +241,7 @@ void env_init(void) {
 	*/
 	/* Exercise 3.1: Your code here. (2/2) */
 	for (i = NENV - 1; i >= 0; --i) {
-		LIST_INSERT_HEAD(&env_free_list, &(envs[i]), env_link);
+		LIST_INSERT_HEAD(&env_free_list, envs + i, env_link);
 		envs[i].env_status = ENV_FREE;
 	}
 
@@ -294,7 +292,7 @@ static int env_setup_vm(struct Env *e) {
 	struct Page *p;
 	try(page_alloc(&p));
 	/* Exercise 3.3: Your code here. */
-	++(p->pp_ref);
+	p->pp_ref++;
 	e->env_pgdir = (Pde *)page2kva(p);
 
 	/* Step 2: Copy the template page directory 'base_pgdir' to 'e->env_pgdir'. */

@@ -91,7 +91,7 @@ static void duppage(u_int envid, u_int vpn) {
 	/* Exercise 4.10: Your code here. (2/2) */
 	int flag = 0;
 	if ((perm & PTE_D) && !(perm & PTE_LIBRARY)) {
-		perm = (perm & ~ PTE_D) | PTE_COW;
+		perm = (perm & (~PTE_D)) | (PTE_COW);
 		flag = 1;
 	}
 
@@ -128,8 +128,10 @@ int fork(void) {
 	child = syscall_exofork();
 	if (child == 0) {
 		env = envs + ENVX(syscall_getenvid());
+		// debugf("child\n");
 		return 0;
 	}
+	// debugf("parent\n");
 
 	/* Step 3: Map all mapped pages below 'USTACKTOP' into the child's address space. */
 	// Hint: You should use 'duppage'.

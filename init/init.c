@@ -70,12 +70,7 @@ void mips_init(u_int argc, char **argv, char **penv, u_int ram_low_size) {
 	// ENV_CREATE(fs_serv);  // This must be the second env!
 	// ENV_CREATE(user_devtst);
 
-	// lab3:
-	// 2023 codes:
-	// kclock_init();
-	// enable_irq();
-	// while (1) {}
-	
+	lab3:
 	schedule(0);
 }
 
