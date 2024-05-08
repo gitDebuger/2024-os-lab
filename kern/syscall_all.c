@@ -616,6 +616,88 @@ int sys_read_dev(u_int va, u_int pa, u_int len) {
 	return 0;
 }
 
+int sys_msg_send(u_int envid, u_int value, u_int srcva, u_int perm) {
+	struct Env *e;
+	struct Page *p;
+	struct Msg *m;
+
+	if (srcva != 0 && is_illegal_va(srcva)) {
+		return -E_INVAL;
+	}
+	try(envid2env(envid, &e, 0));
+	if (TAILQ_EMPTY(&msg_free_list)) {
+		return -E_NO_MSG;
+	}
+
+	/* Your Code Here (1/3) */
+	m = TAILQ_FIRST(&msg_free_list);
+	m->msg_tier++;
+	m->msg_status = MSG_SENT;
+	TAILQ_REMOVE(&msg_free_list, m, msg_link);
+	m->msg_from = curenv->env_id;
+	m->msg_value = value;
+	m->msg_perm = PTE_V | perm;
+	if (srcva != 0) {
+		p = page_lookup(curenv->env_pgdir, srcva, NULL);
+		if (p == NULL) {
+			return -E_INVAL;
+		}
+		p->pp_ref++;
+		m->msg_page = p;
+	} else {
+		m->msg_page = NULL;
+	}
+	TAILQ_INSERT_TAIL(&(e->env_msg_list), m, msg_link);
+	return msg2id(m);
+
+}
+
+int sys_msg_recv(u_int dstva) {
+	struct Msg *m;
+	struct Page *p;
+
+	if (dstva != 0 && is_illegal_va(dstva)) {
+		return -E_INVAL;
+	}
+	if (TAILQ_EMPTY(&curenv->env_msg_list)) {
+		return -E_NO_MSG;
+	}
+
+	/* Your Code Here (2/3) */
+	m = TAILQ_FIRST(&(curenv->env_msg_list));
+	TAILQ_REMOVE(&(curenv->env_msg_list), m, msg_link);
+	if (m->msg_page != NULL && dstva != 0) {
+		p = m->msg_page;
+		try(page_insert(curenv->env_pgdir, curenv->env_asid, p, dstva, m->msg_perm));
+		page_decref(p);
+	} else if (m->msg_page != NULL) {
+		page_decref(m->msg_page);
+	}
+	
+	curenv->env_msg_value = m->msg_value;
+	curenv->env_msg_from = m->msg_from;
+	curenv->env_msg_perm = m->msg_perm;
+
+	m->msg_status = MSG_RECV;
+	TAILQ_INSERT_TAIL(&msg_free_list, m, msg_link);
+	return 0;
+}
+
+int sys_msg_status(u_int msgid) {
+	struct Msg *m;
+
+	/* Your Code Here (3/3) */
+	m = &msgs[MSGX(msgid)];
+	u_int id = msg2id(m);
+	if (id == msgid) {
+		return m->msg_status;
+	} else if (id > msgid) {
+		return MSG_RECV;
+	} else {
+		return -E_INVAL;
+	}
+}
+
 /* 系统调用向量表 */
 void *syscall_table[MAX_SYSNO] = {
     [SYS_putchar] = sys_putchar,
@@ -636,6 +718,9 @@ void *syscall_table[MAX_SYSNO] = {
     [SYS_cgetc] = sys_cgetc,
     [SYS_write_dev] = sys_write_dev,
     [SYS_read_dev] = sys_read_dev,
+    [SYS_msg_send] = sys_msg_send,
+    [SYS_msg_recv] = sys_msg_recv,
+    [SYS_msg_status] = sys_msg_status,
 };
 
 /* Overview:

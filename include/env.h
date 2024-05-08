@@ -5,6 +5,7 @@
 #include <queue.h>
 #include <trap.h>
 #include <types.h>
+#include <msg.h>
 
 #define LOG2NENV 10
 #define NENV (1 << LOG2NENV) // 进程控制块总数
@@ -71,6 +72,12 @@ struct Env {
 
 	/* 当前进程已经被 env_run 调用的次数 */
 	u_int env_runs; // number of times we've been env_run'ed
+
+	// lab4-1-extra
+	struct Msg_list env_msg_list;
+	u_int env_msg_value;
+	u_int env_msg_from;
+	u_int env_msg_perm;
 };
 
 /* struct Env_list { struct Env *lh_first; } */

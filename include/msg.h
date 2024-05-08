@@ -9,10 +9,11 @@
 #define NMSG (1 << LOG2NMSG)
 #define MSGX(msgid) ((msgid) & (NMSG - 1))
 
+/* define the status of Msg block */
 enum {
-	MSG_FREE,
-	MSG_SENT,
-	MSG_RECV,
+	MSG_FREE, // free Msg
+	MSG_SENT, // message has been sent but has not been received
+	MSG_RECV, // message has been received
 };
 
 // Control block of a message.

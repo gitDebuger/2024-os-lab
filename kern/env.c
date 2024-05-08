@@ -410,6 +410,9 @@ int env_alloc(struct Env **new, u_int parent_id) {
 	// 为 argc 和 argv 预留空间
 	e->env_tf.regs[29] = USTACKTOP - sizeof(int) - sizeof(char **);
 
+	// lab4-1-extra
+	TAILQ_INIT(&(e->env_msg_list));
+
 	/* Step 5: Remove the new Env from env_free_list. */
 	/* 将新的进程控制块从 env_free_list 中移除 */
 	/* Exercise 3.4: Your code here. (4/4) */
