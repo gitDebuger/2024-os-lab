@@ -4,6 +4,8 @@
 #include <syscall.h>
 #include <trap.h>
 
+/* 所有的系统调用函数 */
+
 void syscall_putchar(int ch) {
 	msyscall(SYS_putchar, ch);
 }

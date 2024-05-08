@@ -15,6 +15,7 @@
 	* $sp is already a kernel stack pointer, we don't need to set it again.
 	*/
 	li      sp, KSTACKTOP
+/* 保存寄存器的值到陷入帧结构体 */
 1:
 	subu    sp, sp, TF_SIZE
 	sw      k0, TF_REG29(sp)
@@ -65,6 +66,7 @@
 .set reorder
 .endm
 
+/* 从陷入帧结构体恢复寄存器的值 */
 .macro RESTORE_ALL
 .set noreorder
 .set noat

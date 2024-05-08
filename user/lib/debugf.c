@@ -1,6 +1,8 @@
 #include <lib.h>
 #include <print.h>
 
+/* 用于在用户态下打印一些信息 */
+
 #define BUF_LEN 1024
 
 struct debug_ctx {

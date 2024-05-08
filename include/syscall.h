@@ -3,6 +3,7 @@
 
 #ifndef __ASSEMBLER__
 
+/* 用于 kern/syscall_all.c 中的系统调用向量表 */
 enum {
 	SYS_putchar,
 	SYS_print_cons,

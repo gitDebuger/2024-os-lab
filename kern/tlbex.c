@@ -108,6 +108,11 @@ void _do_tlb_refill(u_long *pentrylo, u_int va, u_int asid) {
  *
  *   The user entry should handle this TLB Mod exception and restore the context.
  */
+/**
+ * 内核 TLB Mod 异常处理函数
+ * 我们的内核允许用户程序在用户态处理 TLB Mod 异常
+ * 因此我们将它的上下文 tf 复制到 UXSTACK 中并将 EPC 修改为用户注册的异常项
+*/
 void do_tlb_mod(struct Trapframe *tf) {
 	struct Trapframe tmp_tf = *tf;
 
