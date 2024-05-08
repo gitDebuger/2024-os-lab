@@ -616,6 +616,47 @@ int sys_read_dev(u_int va, u_int pa, u_int len) {
 	return 0;
 }
 
+int sems[15];
+int sems_valid[15] = {0};
+
+void sys_sem_open(int sem_id, int n) {
+	// Lab 4-1-Exam: Your code here. (6/9)
+	if (sem_id >= 0 && sem_id < 15) {
+		sems_valid[sem_id] = 1;
+		sems[sem_id] = n;
+	}
+}
+
+int sys_sem_wait(int sem_id) {
+	// Lab 4-1-Exam: Your code here. (7/9)
+	if (sem_id < 0 || sem_id >= 15 || !sems_valid[sem_id]) {
+		return -E_SEM_NOT_OPEN;
+	}
+	if (sems[sem_id] == 0) {
+		return 0;
+	}
+	sems[sem_id]--;
+	return sems[sem_id] + 1;
+}
+
+int sys_sem_post(int sem_id) {
+	// Lab 4-1-Exam: Your code here. (8/9)
+	if (sem_id < 0 || sem_id >= 15 || !sems_valid[sem_id]) {
+                 return -E_SEM_NOT_OPEN;
+        }
+	sems[sem_id]++;
+	return 0;
+}
+
+int sys_sem_kill(int sem_id) {
+	// Lab 4-1-Exam: Your code here. (9/9)
+	if (sem_id < 0 || sem_id >= 15 || !sems_valid[sem_id]) {
+		return -E_SEM_NOT_OPEN;
+	}
+	sems_valid[sem_id] = 0;
+	return 0;
+}
+
 /* 系统调用向量表 */
 void *syscall_table[MAX_SYSNO] = {
     [SYS_putchar] = sys_putchar,
@@ -636,6 +677,10 @@ void *syscall_table[MAX_SYSNO] = {
     [SYS_cgetc] = sys_cgetc,
     [SYS_write_dev] = sys_write_dev,
     [SYS_read_dev] = sys_read_dev,
+    [SYS_sem_open] = sys_sem_open,
+    [SYS_sem_wait] = sys_sem_wait,
+    [SYS_sem_post] = sys_sem_post,
+    [SYS_sem_kill] = sys_sem_kill,
 };
 
 /* Overview:
