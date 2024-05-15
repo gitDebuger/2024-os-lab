@@ -1,9 +1,449 @@
-<mxfile host="Electron" modified="2024-04-22T09:45:08.298Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="navPvVAR8MZOI2t8WmoR" version="24.2.5" type="device">
+<mxfile host="Electron" modified="2024-04-22T11:41:45.824Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="-H_ZCmwpiqVbJDyRruLh" version="24.2.5" type="device">
   <diagram name="第 1 页" id="VvnD1uf28huWxOb_pR6d">
-    <mxGraphModel dx="1036" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1091" dy="638" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-1" target="-TvTE6vRX-gle3-zoLTQ-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-1" value="_start&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;init/start.S&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="424" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-33">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="454" y="400" />
+              <mxPoint x="290" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-46">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="514" y="400" />
+              <mxPoint x="570" y="400" />
+              <mxPoint x="570" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-123" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-92">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="315" />
+              <mxPoint x="580" y="270" />
+              <mxPoint x="680" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-124" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-2" target="-TvTE6vRX-gle3-zoLTQ-121">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="514" y="280" />
+              <mxPoint x="560" y="280" />
+              <mxPoint x="560" y="40" />
+              <mxPoint x="1390" y="40" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-2" value="mips_init&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;init/init.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="424" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-5" target="-TvTE6vRX-gle3-zoLTQ-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-5" target="-TvTE6vRX-gle3-zoLTQ-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-5" value="printk&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/printk.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-7" target="-TvTE6vRX-gle3-zoLTQ-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-7" target="-TvTE6vRX-gle3-zoLTQ-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-7" target="-TvTE6vRX-gle3-zoLTQ-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-7" target="-TvTE6vRX-gle3-zoLTQ-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-7" value="vprintfmt&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/print.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fontFamily=Lucida Console;" vertex="1" parent="1">
+          <mxGeometry x="230" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-9" target="-TvTE6vRX-gle3-zoLTQ-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-9" value="outputk&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/printk.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-11" value="printcharc&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/machine.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="60" y="410" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-14" target="-TvTE6vRX-gle3-zoLTQ-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="60" />
+              <mxPoint x="40" y="60" />
+              <mxPoint x="40" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-14" value="print_num&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/print.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-15" target="-TvTE6vRX-gle3-zoLTQ-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="60" y="110" />
+              <mxPoint x="60" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-15" value="print_num&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/print.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-16" target="-TvTE6vRX-gle3-zoLTQ-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="40" />
+              <mxPoint x="20" y="40" />
+              <mxPoint x="20" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-16" value="print_num&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/print.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-24" target="-TvTE6vRX-gle3-zoLTQ-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="380" />
+              <mxPoint x="320" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-24" value="mips_detect_memory&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="590" y="300" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-31" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-28" target="-TvTE6vRX-gle3-zoLTQ-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-28" value="mips_vm_init&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="424" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-30" value="alloc&lt;div&gt;in&lt;/div&gt;&lt;div&gt;kern/pmap.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="610" y="410" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.617;entryY=1.01;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-28" target="-TvTE6vRX-gle3-zoLTQ-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-33" value="page_init&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-46" target="-TvTE6vRX-gle3-zoLTQ-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-46" target="-TvTE6vRX-gle3-zoLTQ-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-46" target="-TvTE6vRX-gle3-zoLTQ-58">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-46" value="env_init&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-52" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-49" target="-TvTE6vRX-gle3-zoLTQ-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-49" value="page_alloc&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="610" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-54" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-51" target="-TvTE6vRX-gle3-zoLTQ-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-51" value="page2kva&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;include/pmap.h&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="710" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-56" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-53" target="-TvTE6vRX-gle3-zoLTQ-55">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-53" value="page2pa&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;include/pmap.h&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-55" value="page2ppn&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;include/pmap.h&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="910" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-62" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-58" target="-TvTE6vRX-gle3-zoLTQ-61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-58" target="-TvTE6vRX-gle3-zoLTQ-69">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-58" value="map_segment&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;fontFamily=Lucida Console;html=1;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="610" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-64" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-61" target="-TvTE6vRX-gle3-zoLTQ-63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-68" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-61" target="-TvTE6vRX-gle3-zoLTQ-67">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-61" target="-TvTE6vRX-gle3-zoLTQ-69">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="710" />
+              <mxPoint x="410" y="710" />
+              <mxPoint x="410" y="1040" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-61" target="-TvTE6vRX-gle3-zoLTQ-82">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="655" />
+              <mxPoint x="380" y="680" />
+              <mxPoint x="500" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-91" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-61" target="-TvTE6vRX-gle3-zoLTQ-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-61" value="page_insert&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="610" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-63" target="-TvTE6vRX-gle3-zoLTQ-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-63" target="-TvTE6vRX-gle3-zoLTQ-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-63" value="pgdir_walk&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="610" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-73" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-67" target="-TvTE6vRX-gle3-zoLTQ-72">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-77" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-67" target="-TvTE6vRX-gle3-zoLTQ-76">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-84" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-67" target="-TvTE6vRX-gle3-zoLTQ-82">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-67" value="page_remove&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="730" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-69" value="pa2page&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;include/pmap.h&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="1010" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-72" target="-TvTE6vRX-gle3-zoLTQ-63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-75" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-72" target="-TvTE6vRX-gle3-zoLTQ-69">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-72" value="page_lookup&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry y="730" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-80" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-76" target="-TvTE6vRX-gle3-zoLTQ-79">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-76" value="page_decref&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="230" y="870" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-79" value="page_free&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/pmap.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="860" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-87" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-82" target="-TvTE6vRX-gle3-zoLTQ-86">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-82" value="tlb_invalidate&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/tlbex.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="730" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-86" value="tlb_out&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/tlb_asm.S&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="424" y="910" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-95" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-92" target="-TvTE6vRX-gle3-zoLTQ-94">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-92" value="ENV_CREATE_PRIORITY&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;include/env.h&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fontFamily=Lucida Console;" vertex="1" parent="1">
+          <mxGeometry x="590" y="180" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-97" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-94" target="-TvTE6vRX-gle3-zoLTQ-96">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-110" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-94" target="-TvTE6vRX-gle3-zoLTQ-109">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="125" />
+              <mxPoint x="790" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-94" value="env_create&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="620" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-99" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-96" target="-TvTE6vRX-gle3-zoLTQ-98">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-106" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-96" target="-TvTE6vRX-gle3-zoLTQ-104">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-96" target="-TvTE6vRX-gle3-zoLTQ-107">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-96" value="env_alloc&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-101" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-98" target="-TvTE6vRX-gle3-zoLTQ-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-102" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-98" target="-TvTE6vRX-gle3-zoLTQ-51">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="225" />
+              <mxPoint x="860" y="755" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-98" value="env_setup_vm&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-104" value="mkenvid&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-107" value="asid_alloc&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="170" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-112" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-109" target="-TvTE6vRX-gle3-zoLTQ-111">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-114" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-109" target="-TvTE6vRX-gle3-zoLTQ-113">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-117" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-109" target="-TvTE6vRX-gle3-zoLTQ-115">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-109" value="load_icode&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-111" value="elf_from&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/elf_loader.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1050" y="270" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-116" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-113" target="-TvTE6vRX-gle3-zoLTQ-115">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-113" value="elf_load_seg&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;lib/elf_loader.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="865" y="390" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-118" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-115" target="-TvTE6vRX-gle3-zoLTQ-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-119" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-115" target="-TvTE6vRX-gle3-zoLTQ-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-120" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-115" target="-TvTE6vRX-gle3-zoLTQ-61">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1183" y="580" />
+              <mxPoint x="290" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-115" value="load_icode_mapper&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1055" y="390" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-126" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-121" target="-TvTE6vRX-gle3-zoLTQ-125">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-121" value="schedule&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/sched.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1330" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-128" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-125" target="-TvTE6vRX-gle3-zoLTQ-127">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-125" value="env_run&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1330" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-130" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-127">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1390" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-127" value="env_pop_tf&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env_asm.S&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1320" y="280" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-131" value="&lt;span style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 14px; font-weight: 700;&quot;&gt;ret_from_exception&lt;/span&gt;&lt;div style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 14px; font-weight: 700;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-family: &amp;quot;Lucida Console&amp;quot;; font-size: 14px; font-weight: 700;&quot;&gt;kern/genex.S&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="390" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-133" value="asid_free&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1330" y="500" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-134" value="&lt;div style=&quot;font-size: 14px;&quot;&gt;envid2env&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Lucida Console;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1330" y="610" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-136" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-135" target="-TvTE6vRX-gle3-zoLTQ-67">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1140" y="890" />
+              <mxPoint x="370" y="890" />
+              <mxPoint x="370" y="810" />
+              <mxPoint x="320" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-137" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-135" target="-TvTE6vRX-gle3-zoLTQ-76">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1170" y="1000" />
+              <mxPoint x="290" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-138" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-135" target="-TvTE6vRX-gle3-zoLTQ-69">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-139" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-135" target="-TvTE6vRX-gle3-zoLTQ-82">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-140" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-135" target="-TvTE6vRX-gle3-zoLTQ-133">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1170" y="730" />
+              <mxPoint x="1200" y="730" />
+              <mxPoint x="1200" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-135" value="env_free&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-142" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-141" target="-TvTE6vRX-gle3-zoLTQ-135">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-143" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-TvTE6vRX-gle3-zoLTQ-141" target="-TvTE6vRX-gle3-zoLTQ-121">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1520" y="840" />
+              <mxPoint x="1520" y="110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-TvTE6vRX-gle3-zoLTQ-141" value="env_destroy&lt;div style=&quot;font-size: 14px;&quot;&gt;in&lt;/div&gt;&lt;div style=&quot;font-size: 14px;&quot;&gt;kern/env.c&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontFamily=Lucida Console;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1330" y="810" width="120" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
