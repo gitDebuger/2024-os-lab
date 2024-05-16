@@ -56,6 +56,7 @@ void fs_check() {
 	}
 
 	if (strecmp(blk, msg) != 0) {
+		// debugf(blk);
 		user_panic("file_get_block returned wrong data");
 	}
 
