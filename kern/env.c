@@ -420,6 +420,35 @@ int env_alloc(struct Env **new, u_int parent_id) {
 	return 0;
 }
 
+int env_clone(struct Env **new, u_int parent_id) {
+	int r;
+	struct Env *e;
+
+	if (LIST_EMPTY(&env_free_list)) {
+		return -E_NO_FREE_ENV;
+	}
+	e = LIST_FIRST(&env_free_list);
+
+	e->env_user_tlb_mod_entry = 0;
+	e->env_runs = 0;
+	e->env_id = mkenvid(e);
+	e->env_parent_id = parent_id;
+
+	struct Env *parent = envs + ENVX(parent_id);
+	e->env_pgdir = parent->env_pgdir;
+	struct Page *p = pa2page(PADDR(e->env_pgdir));
+	p->pp_ref++;
+	e->env_asid = parent->env_asid;
+
+	e->env_tf.cp0_status = STATUS_IM7 | STATUS_IE | STATUS_EXL | STATUS_UM;
+	e->env_tf.regs[29] = USTACKTOP - sizeof(int) - sizeof(char **);
+
+	LIST_REMOVE(e, env_link);
+
+	*new = e;
+	return 0;
+}
+
 /* Overview:
  *   Load a page into the user address space of an env with permission 'perm'.
  *   If 'src' is not NULL, copy the 'len' bytes from 'src' into 'offset' at this page.
@@ -574,6 +603,10 @@ void env_free(struct Env *e) {
 	/* Hint: Note the environment's demise.*/
 	/* 请注意环境的消亡 */
 	printk("[%08x] free env %08x\n", curenv ? curenv->env_id : 0, e->env_id);
+	
+	struct Page *p = pa2page(PADDR(e->env_pgdir));
+if (p->pp_ref == 1)
+{
 
 	/* Hint: Flush all mapped pages in the user portion of the address space */
 	/* 刷新地址空间的用户部分中的所有映射页 */
@@ -612,6 +645,11 @@ void env_free(struct Env *e) {
 	/* Hint: invalidate page directory in TLB */
 	/* 使 TLB 中的页目录无效化 */
 	tlb_invalidate(e->env_asid, UVPT + (PDX(UVPT) << PGSHIFT));
+}
+else 
+{
+	page_decref(p);
+}
 	/* Hint: return the environment to the free list. */
 	/* 将进程控制块归还给空闲链表 */
 	e->env_status = ENV_FREE;

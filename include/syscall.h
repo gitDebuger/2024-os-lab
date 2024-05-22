@@ -25,6 +25,7 @@ enum {
 	SYS_cgetc,
 	SYS_write_dev,
 	SYS_read_dev,
+	SYS_clone,
 	MAX_SYSNO,
 };
 

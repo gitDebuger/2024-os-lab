@@ -616,6 +616,21 @@ int sys_read_dev(u_int va, u_int pa, u_int len) {
 	return 0;
 }
 
+int sys_clone(void *func, void *child_stack) {
+	struct Page *p = pa2page(PADDR(curenv->env_pgdir));
+	if (p->pp_ref >= 64) {
+		return -E_ACT_ENV_NUM_EXCEED;
+	}
+	struct Env *e;
+	try(env_clone(&e, curenv->env_id));
+	e->env_tf = curenv->env_tf;
+	(e->env_tf).regs[29] = child_stack;
+	(e->env_tf).cp0_epc = func;
+	e->env_status = ENV_RUNNABLE;
+	TAILQ_INSERT_TAIL(&env_sched_list, e, env_sched_link);
+	return e->env_id;
+}
+
 /* 系统调用向量表 */
 /* if you need to add other syscall */
 /* you need to write it into this table */
@@ -639,6 +654,7 @@ void *syscall_table[MAX_SYSNO] = {
     [SYS_cgetc] = sys_cgetc,
     [SYS_write_dev] = sys_write_dev,
     [SYS_read_dev] = sys_read_dev,
+    [SYS_clone] = sys_clone,
 };
 
 /* Overview:
