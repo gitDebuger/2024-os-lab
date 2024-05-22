@@ -156,6 +156,7 @@ int fork(void) {
 	/* 所以我们应该将其设置为正确的值 */
 	child = syscall_exofork();
 	if (child == 0) {
+		straced = 0;
 		env = envs + ENVX(syscall_getenvid());
 		return 0;
 	}

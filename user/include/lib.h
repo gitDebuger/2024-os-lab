@@ -143,4 +143,14 @@ int sync(void);
 #define O_EXCL 0x0400  /* error if already exists */
 #define O_MKDIR 0x0800 /* create directory, not regular file */
 
+// lab4-2-exam
+extern volatile int straced;
+#define STRACE_MAX_RECV 1024
+extern int strace_recv_sysno[STRACE_MAX_RECV], strace_recv_child[STRACE_MAX_RECV];
+extern int strace_recv_cnt;
+void recv_sysno(u_int child, int sysno);
+
+void strace_send(int sysno);
+void strace_recv();
+
 #endif
