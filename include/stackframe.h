@@ -2,6 +2,8 @@
 #include <mmu.h>
 #include <trap.h>
 
+/* if need to store other register into struct Trapframe */
+/* you need to change this file */
 // clang-format off
 .macro SAVE_ALL
 .set noat

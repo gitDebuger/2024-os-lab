@@ -48,6 +48,7 @@ int spawnl(char *prot, char *args, ...);
 int fork(void);
 
 /// syscalls
+// all syscall functions need to be declared here
 extern int msyscall(int, ...);
 
 void syscall_putchar(int ch);
@@ -74,6 +75,7 @@ int syscall_write_dev(void *va, u_int dev, u_int len);
 int syscall_read_dev(void *va, u_int dev, u_int len);
 
 // ipc.c
+// all functions about ipc must be declared here
 void ipc_send(u_int whom, u_int val, const void *srcva, u_int perm);
 u_int ipc_recv(u_int *whom, void *dstva, u_int *perm);
 

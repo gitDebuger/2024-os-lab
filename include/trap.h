@@ -7,6 +7,10 @@
 
 /* 保存因异常或中断陷入内核时的栈帧信息 */
 /* 以便异常处理程序可以恢复处理器的状态并继续执行 */
+/* if you need to store other registers into this Trapframe */
+/* remember to add fields after cp0_epc */
+/* and add macros at the end of this file */
+/* and change the definition of macro TF_SIZE */
 struct Trapframe {
 	/* Saved main processor registers. */
 	/* 保存 32 个通用寄存器信息 */

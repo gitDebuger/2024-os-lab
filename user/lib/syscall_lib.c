@@ -5,7 +5,12 @@
 #include <trap.h>
 
 /* 所有的系统调用函数 */
-
+/* all syscall function in user mode */
+/*
+T syscall_func(args) {
+	return msyscall(SYS_func, args);
+}
+*/
 void syscall_putchar(int ch) {
 	msyscall(SYS_putchar, ch);
 }

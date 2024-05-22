@@ -1,4 +1,5 @@
 // User-level IPC library routines
+/* all functions about ipc must be defined in this file */
 
 #include <env.h>
 #include <lib.h>

@@ -617,6 +617,9 @@ int sys_read_dev(u_int va, u_int pa, u_int len) {
 }
 
 /* 系统调用向量表 */
+/* if you need to add other syscall */
+/* you need to write it into this table */
+/* and define the syscall function before the syscall table */
 void *syscall_table[MAX_SYSNO] = {
     [SYS_putchar] = sys_putchar,
     [SYS_print_cons] = sys_print_cons,

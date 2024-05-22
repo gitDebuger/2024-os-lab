@@ -18,6 +18,8 @@
 
 // Control block of an environment (process).
 // 进程控制块结构体
+/* if you need to store other information about a process */
+/* you need to add fields into this struct Env */
 struct Env {
 	/* 保存陷入内核时的上下文信息 */
 	/* 定义在 /include/trap.h 中 */
