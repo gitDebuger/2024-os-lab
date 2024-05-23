@@ -21,6 +21,7 @@ struct Dev;
 // It is used to read and write data from corresponding device.
 // We can use the five functions to handle data.
 // There are three devices in this OS: file, console and pipe.
+// 通过结构体实现了类似抽象类的功能
 struct Dev {
 	int dev_id;
 	char *dev_name;
@@ -32,10 +33,12 @@ struct Dev {
 };
 
 // file descriptor
+// 文件描述符
+// 不体现文件物理结构
 struct Fd {
-	u_int fd_dev_id;
-	u_int fd_offset;
-	u_int fd_omode;
+	u_int fd_dev_id; // 文件对应的设备
+	u_int fd_offset; // 文件读写偏移量
+	u_int fd_omode; // 文件读写模式
 };
 
 // State

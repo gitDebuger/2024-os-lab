@@ -19,9 +19,12 @@ u_char fsipcbuf[PAGE_SIZE] __attribute__((aligned(PAGE_SIZE)));
 // Returns:
 //  0 if successful,
 //  < 0 on failure.
+// 向文件系统服务进程发送消息
+// 并接收服务进程返回的消息
 static int fsipc(u_int type, void *fsreq, void *dstva, u_int *perm) {
 	u_int whom;
 	// Our file system server must be the 2nd env.
+	// 文件系统服务进程必须是第二个进程
 	ipc_send(envs[1].env_id, type, fsreq, PTE_D);
 	return ipc_recv(&whom, dstva, perm);
 }
@@ -33,10 +36,14 @@ static int fsipc(u_int type, void *fsreq, void *dstva, u_int *perm) {
 // Returns:
 //  0 on success,
 //  < 0 on failure.
+// 将 path 对应的文件以 omode 方式打开
+// 将该文件的文件描述符共享到 fd 指针对应的地址处
 int fsipc_open(const char *path, u_int omode, struct Fd *fd) {
 	u_int perm;
 	struct Fsreq_open *req;
 
+	// 缓冲区
+	// 用于传递文件路径和文件打开模式
 	req = (struct Fsreq_open *)fsipcbuf;
 
 	// The path is too long.
@@ -46,6 +53,8 @@ int fsipc_open(const char *path, u_int omode, struct Fd *fd) {
 
 	strcpy((char *)req->req_path, path);
 	req->req_omode = omode;
+	// 向文件系统服务进程发送信息
+	// 请求文件系统服务
 	return fsipc(FSREQ_OPEN, req, fd, &perm);
 }
 

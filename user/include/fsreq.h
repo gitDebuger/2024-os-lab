@@ -5,6 +5,8 @@
 #include <types.h>
 
 // Definitions for requests from clients to file system
+// 请求类型定义
+// fsipc 函数的第一个参数
 
 enum {
 	FSREQ_OPEN,

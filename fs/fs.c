@@ -25,8 +25,10 @@ int va_is_mapped(void *va) {
 // Overview:
 //  Check if this disk block is mapped in cache.
 //  Returns the virtual address of the cache page if mapped, 0 otherwise.
+// 检查磁盘块是否被映射
 void *block_is_mapped(u_int blockno) {
 	void *va = disk_addr(blockno);
+	// 通过检查虚拟地址是否被映射来判断磁盘块是否被映射
 	if (va_is_mapped(va)) {
 		return va;
 	}
@@ -90,6 +92,7 @@ void write_block(u_int blockno) {
 //
 // Hint:
 //  use disk_addr, block_is_mapped, syscall_mem_alloc, and ide_read.
+// 读取对应磁盘块编号的磁盘块数据到内存
 int read_block(u_int blockno, void **blk, u_int *isnew) {
 	// Step 1: validate blockno. Make file the block to read is within the disk.
 	if (super && blockno >= super->s_nblocks) {
@@ -106,6 +109,7 @@ int read_block(u_int blockno, void **blk, u_int *isnew) {
 	}
 
 	// Step 3: transform block number to corresponding virtual address.
+	// 获取磁盘块编号应该存储到的地址
 	void *va = disk_addr(blockno);
 
 	// Step 4: read disk and set *isnew.
@@ -113,19 +117,25 @@ int read_block(u_int blockno, void **blk, u_int *isnew) {
 	//  If this block is already mapped, just set *isnew, else alloc memory and
 	//  read data from IDE disk (use `syscall_mem_alloc` and `ide_read`).
 	//  We have only one IDE disk, so the diskno of ide_read should be 0.
+	// 判断磁盘块是否已经被映射
 	if (block_is_mapped(blockno)) { // the block is in memory
 		if (isnew) {
 			*isnew = 0;
 		}
 	} else { // the block is not in memory
+		// 如果磁盘块没有被映射
 		if (isnew) {
 			*isnew = 1;
 		}
+		// 如果没有映射
+		// 则分配内存
 		try(syscall_mem_alloc(0, va, PTE_D));
+		// 并将磁盘中的数据读入该内存空间
 		ide_read(0, blockno * SECT2BLK, va, SECT2BLK);
 	}
 
 	// Step 5: if blk != NULL, assign 'va' to '*blk'.
+	// 返回读取的磁盘块数据对应的内存地址
 	if (blk) {
 		*blk = va;
 	}
@@ -134,6 +144,7 @@ int read_block(u_int blockno, void **blk, u_int *isnew) {
 
 // Overview:
 //  Allocate a page to cache the disk block.
+// 申请一个页面用于存储磁盘块内容
 int map_block(u_int blockno) {
 	// Step 1: If the block is already mapped in cache, return 0.
 	// Hint: Use 'block_is_mapped'.
@@ -161,6 +172,7 @@ void unmap_block(u_int blockno) {
 	// Hint: Use 'block_is_free', 'block_is_dirty' to check, and 'write_block' to sync.
 	/* Exercise 5.7: Your code here. (4/5) */
 	if (!block_is_free(blockno) && block_is_dirty(blockno)) {
+		// 将内存中对磁盘块的修改写回磁盘
 		write_block(blockno);
 	}
 
@@ -227,16 +239,22 @@ int alloc_block_num(void) {
 
 // Overview:
 //  Allocate a block -- first find a free block in the bitmap, then map it into memory.
+// 首先调用 alloc_block_num 在磁盘块管理位图上找到空闲的磁盘块
+// 更新位图并将位图写入内存
 int alloc_block(void) {
 	int r, bno;
 	// Step 1: find a free block.
+	// 首先调用 alloc_block_num 在磁盘块管理位图上找到空闲的磁盘块
+	// 更新位图并将位图写入内存
 	if ((r = alloc_block_num()) < 0) { // failed.
 		return r;
 	}
 	bno = r;
 
 	// Step 2: map this block into memory.
+	// 调用 map_block 将获取的编号所对应的空闲磁盘块从磁盘中读入内存
 	if ((r = map_block(bno)) < 0) {
+		// 重新将位图对应位置置 1 表示空闲。
 		free_block(bno);
 		return r;
 	}
@@ -250,23 +268,30 @@ int alloc_block(void) {
 //
 // Post-condition:
 //  If error occurred during read super block or validate failed, panic.
+// 读取并验证文件系统超级块
+// 如果出错直接 panic 即可
 void read_super(void) {
 	int r;
 	void *blk;
 
 	// Step 1: read super block.
+	// 读取超级块
 	if ((r = read_block(1, &blk, 0)) < 0) {
 		user_panic("cannot read superblock: %d", r);
 	}
 
+	// 将第一个磁盘块的内容赋值给全局变量
+	// 也就是说现在可以通过全局变量 super 读取超级块了
 	super = blk;
 
 	// Step 2: Check fs magic nunber.
+	// 检查超级块魔数
 	if (super->s_magic != FS_MAGIC) {
 		user_panic("bad file system magic number %x %x", super->s_magic, FS_MAGIC);
 	}
 
 	// Step 3: validate disk size.
+	// 校验磁盘大小
 	if (super->s_nblocks > DISKMAX / BLOCK_SIZE) {
 		user_panic("file system is too large");
 	}
@@ -281,16 +306,23 @@ void read_super(void) {
 //  Read all the bitmap blocks into memory.
 //  Set the 'bitmap' to point to the first bitmap block.
 //  For each block i, user_assert(!block_is_free(i))) to check that they're all marked as in use.
+// 读取并检查磁盘块分配位图是否有效
 void read_bitmap(void) {
 	u_int i;
 	void *blk = NULL;
 
 	// Step 1: Calculate the number of the bitmap blocks, and read them into memory.
+	// 对于 super->s_nblocks 是 BLOCK_SIZE_BIT 整倍数的情况会多计算一个磁盘块
+	// 可能会有一点小问题
+	// 但是问题不会很大
+	// 因为各个磁盘块数据在内存中的空间并不重合
 	u_int nbitmap = super->s_nblocks / BLOCK_SIZE_BIT + 1;
 	for (i = 0; i < nbitmap; i++) {
+		// 将磁盘中的数据读取到内存缓冲区
 		read_block(i + 2, blk, 0);
 	}
 
+	// 设定全局变量 bitmap 的值为位图的首地址
 	bitmap = disk_addr(2);
 
 	// Step 2: Make sure the reserved and root blocks are marked in-use.
@@ -341,9 +373,14 @@ void check_write_block(void) {
 //  1. read super block.
 //  2. check if the disk can work.
 //  3. read bitmap blocks from disk to memory.
+// 初始化文件系统
 void fs_init(void) {
+	// 读取超级块
+	// 主要功能是检查
 	read_super();
+	// 插入到基本流程中的测试代码
 	check_write_block();
+	// 将管理磁盘块分配的位图读取到内存中
 	read_bitmap();
 }
 
@@ -384,6 +421,7 @@ int file_block_walk(struct File *f, u_int filebno, uint32_t **ppdiskbno, u_int a
 		}
 
 		// Step 3: read the new indirect block to memory.
+		// 使用 read_block 将该磁盘块数据读入内存中
 		if ((r = read_block(f->f_indirect, (void **)&blk, 0)) < 0) {
 			return r;
 		}
@@ -413,11 +451,14 @@ int file_map_block(struct File *f, u_int filebno, u_int *diskbno, u_int alloc) {
 	uint32_t *ptr;
 
 	// Step 1: find the pointer for the target block.
+	// 首先调用 file_block_walk 获取对应的磁盘块编号
 	if ((r = file_block_walk(f, filebno, &ptr, alloc)) < 0) {
 		return r;
 	}
+	// 文件的第 filebno 个磁盘块对应的磁盘块编号现在已经被存储在了 *ptr
 
 	// Step 2: if the block not exists, and create is set, alloc one.
+	// 考虑未找到时再调用 alloc_block 申请一个磁盘块的情况
 	if (*ptr == 0) {
 		if (alloc == 0) {
 			return -E_NOT_FOUND;
@@ -430,6 +471,7 @@ int file_map_block(struct File *f, u_int filebno, u_int *diskbno, u_int alloc) {
 	}
 
 	// Step 3: set the pointer to the block in *diskbno and return 0.
+	// 最后将文件的第 filebno 个磁盘块对应的磁盘块编号传给 *diskbn
 	*diskbno = *ptr;
 	return 0;
 }
@@ -459,17 +501,20 @@ int file_clear_block(struct File *f, u_int filebno) {
 //
 // Post-Condition:
 //  return 0 on success, and read the data to `blk`, return <0 on error.
+// 用于获取文件中第 filebno 个磁盘块
 int file_get_block(struct File *f, u_int filebno, void **blk) {
 	int r;
 	u_int diskbno;
 	u_int isnew;
 
 	// Step 1: find the disk block number is `f` using `file_map_block`.
+	// 首先调用 file_map_block 获取了文件中使用的第 filebno 个磁盘块对应的磁盘块编号
 	if ((r = file_map_block(f, filebno, &diskbno, 1)) < 0) {
 		return r;
 	}
 
 	// Step 2: read the data in this disk to blk.
+	// 调用 read_block 将该磁盘块的内容从磁盘中读取到内存
 	if ((r = read_block(diskbno, blk, &isnew)) < 0) {
 		return r;
 	}
@@ -495,6 +540,9 @@ int file_dirty(struct File *f, u_int offset) {
 // Post-Condition:
 //  Return 0 on success, and set the pointer to the target file in `*file`.
 //  Return the underlying error if an error occurs.
+// 获取文件的所有磁盘块
+// 遍历其中所有的文件控制块
+// 返回指定名字的文件对应的文件控制块
 int dir_lookup(struct File *dir, char *name, struct File **file) {
 	// Step 1: Calculate the number of blocks in 'dir' via its size.
 	u_int nblock;
@@ -506,6 +554,7 @@ int dir_lookup(struct File *dir, char *name, struct File **file) {
 		// Read the i'th block of 'dir' and get its address in 'blk' using 'file_get_block'.
 		void *blk;
 		/* Exercise 5.8: Your code here. (2/3) */
+		// 获取文件中第 i 个磁盘块
 		try(file_get_block(dir, i, &blk));
 
 		struct File *files = (struct File *)blk;
@@ -583,6 +632,8 @@ char *skip_slash(char *p) {
 //  the file is in.
 //  If we cannot find the file but find the directory it should be in, set
 //  *pdir and copy the final path element into lastelem.
+// 解析路径并根据路径不断找到目录下的文件
+// 找到最后得到的就是路径对应的文件的文件控制块
 int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastelem) {
 	char *p;
 	char name[MAXNAMELEN];
@@ -621,6 +672,7 @@ int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastele
 			return -E_NOT_FOUND;
 		}
 
+		// 找到指定目录下的指定名字的文件
 		if ((r = dir_lookup(dir, name, &file)) < 0) {
 			if (r == -E_NOT_FOUND && *path == '\0') {
 				if (pdir) {
@@ -652,6 +704,7 @@ int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastele
 // Post-Condition:
 //  On success set *pfile to point at the file and return 0.
 //  On error return < 0.
+// 打开 path 对应的文件
 int file_open(char *path, struct File **file) {
 	return walk_path(path, 0, file, 0);
 }

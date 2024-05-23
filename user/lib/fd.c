@@ -9,6 +9,8 @@ static struct Dev *devtab[] = {&devfile, &devcons,
 #endif
 			       0};
 
+// 所有的设备都被存储到了全局变量 devtab 中
+// 遍历该数组找到和传入的参数 dev_id 相同的设备
 int dev_lookup(int dev_id, struct Dev **dev) {
 	for (int i = 0; devtab[i]; i++) {
 		if (devtab[i]->dev_id == dev_id) {
@@ -31,13 +33,28 @@ int dev_lookup(int dev_id, struct Dev **dev) {
 //    in a row without allocating the first page we returned, we'll
 //    return the same page at the second time.)
 //   Return 0 on success, or an error code on error.
+// 找到从 0 到 MAXFD - 1 的最小的没有被使用过的文件描述符
+// 返回文件描述符对应的地址
 int fd_alloc(struct Fd **fd) {
 	u_int va;
 	u_int fdno;
 
+	// 这里没有采用任何数据结构进行标记
+	// 只是查看页目录项和页表项是否有效从而进行判断
+	// 因为文件描述符不是在用户进程被创建的
+	// 而是在文件系统服务进程中创建
+	// 然后共享到用户进程的地址区域
+	// 所以只需要找到一处空闲空间
+	// 将文件系统服务进程中对应的文件描述符共享到该位置
 	for (fdno = 0; fdno < MAXFD - 1; fdno++) {
 		va = INDEX2FD(fdno);
 
+		// 首先查看页目录项
+		// 如果页目录项对应的地址空间没有被映射
+		// 那么整个页目录项对应的地址空间都没有进行映射
+		// 则可以直接返回 va
+		// 因为 va 就是该目录项的第一个页表中的第一个页表项对应的地址
+		// 即第一个没有被使用的文件描述符的地址
 		if ((vpd[va / PDMAP] & PTE_V) == 0) {
 			*fd = (struct Fd *)va;
 			return 0;
@@ -62,6 +79,8 @@ void fd_close(struct Fd *fd) {
 // Post-Condition:
 //  Return 0 and set *fd to the pointer to the 'Fd' page on success.
 //  Return -E_INVAL if 'fdnum' is invalid or unmapped.
+// 根据序号找到对应的文件描述符
+// 并且判断文件描述符是否被使用
 int fd_lookup(int fdnum, struct Fd **fd) {
 	u_int va;
 
@@ -71,6 +90,7 @@ int fd_lookup(int fdnum, struct Fd **fd) {
 
 	va = INDEX2FD(fdnum);
 
+	// 又一次使用页表判断
 	if ((vpt[va / PTMAP] & PTE_V) != 0) { // the fd is used
 		*fd = (struct Fd *)va;
 		return 0;
@@ -79,7 +99,10 @@ int fd_lookup(int fdnum, struct Fd **fd) {
 	return -E_INVAL;
 }
 
+// 为不同的文件描述符提供不同的地址用于映射
 void *fd2data(struct Fd *fd) {
+	// 整体的映射区间为 [FILEBASE, FILEBASE + 1024 * PDMAP)
+	// 正好在存储文件描述符的空间 [FILEBASE - PDMAP, FILEBASE) 的上面
 	return (void *)INDEX2DATA(fd2num(fd));
 }
 
@@ -191,6 +214,8 @@ int read(int fdnum, void *buf, u_int n) {
 	struct Dev *dev;
 	struct Fd *fd;
 	/* Exercise 5.10: Your code here. (1/4) */
+	// 首先要根据 fdnum 找到文件描述符
+	// 并根据文件描述符中的设备序号 fd_dev_id 找到对应的设备
 	if ((r = fd_lookup(fdnum, &fd)) < 0 || (r = dev_lookup(fd->fd_dev_id, &dev)) < 0) {
 		return r;
 	}
@@ -198,12 +223,17 @@ int read(int fdnum, void *buf, u_int n) {
 	// Step 2: Check the open mode in 'fd'.
 	// Return -E_INVAL if the file is opened for writing only (O_WRONLY).
 	/* Exercise 5.10: Your code here. (2/4) */
+	// 判断文件的打开方式是否是只写
+	// 如果是那么我们就不能够进行读取
+	// 应该返回异常
 	if ((fd->fd_omode & O_ACCMODE) == O_WRONLY) {
 		return -E_INVAL;
 	}
 
 	// Step 3: Read from 'dev' into 'buf' at the seek position (offset in 'fd').
 	/* Exercise 5.10: Your code here. (3/4) */
+	// 调用设备对应的 dev_read 函数完成数据的读取
+	// 普通文件的读取函数为 file_read
 	r = dev->dev_read(fd, buf, n, fd->fd_offset);
 
 	// Step 4: Update the offset in 'fd' if the read is successful.
@@ -211,10 +241,12 @@ int read(int fdnum, void *buf, u_int n) {
 	 *  A character buffer is not a C string. Only the memory within [buf, buf+n) is safe to
 	 *  use. */
 	/* Exercise 5.10: Your code here. (4/4) */
+	// 更新文件指针 fd_offset
 	if (r > 0) {
 		fd->fd_offset += r;
 	}
 
+	// 返回读到的数据的字节数
 	return r;
 }
 

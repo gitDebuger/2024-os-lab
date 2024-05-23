@@ -25,25 +25,35 @@ struct Dev devfile = {
 // Returns:
 //  the file descriptor on success,
 //  the underlying error on failure.
+// 打开文件或目录
+// 成功返回文件描述符否则返回错误码
 int open(const char *path, int mode) {
 	int r;
 
 	// Step 1: Alloc a new 'Fd' using 'fd_alloc' in fd.c.
 	// Hint: return the error code if failed.
+	// 使用 fd_alloc 申请文件描述符
+	// 如果失败返回错误码
 	struct Fd *fd;
 	/* Exercise 5.9: Your code here. (1/5) */
 	try(fd_alloc(&fd));
 
 	// Step 2: Prepare the 'fd' using 'fsipc_open' in fsipc.c.
+	// 使用 fsipc.c 中的 fsipc_open 函数准备 fd 变量
 	/* Exercise 5.9: Your code here. (2/5) */
 	try(fsipc_open(path, mode, fd));
 
 	// Step 3: Set 'va' to the address of the page where the 'fd''s data is cached, using
 	// 'fd2data'. Set 'size' and 'fileid' correctly with the value in 'fd' as a 'Filefd'.
+	// 虽然我们获得了服务进程共享给用户进程的文件描述符
+	// 可文件的内容还没有被一同共享过来
+	// 还需要使用 fsipc_map 进行映射
 	char *va;
 	struct Filefd *ffd;
 	u_int size, fileid;
 	/* Exercise 5.9: Your code here. (3/5) */
+	// 通过 fd2data 获取文件内容应该映射到的地址
+	// 该函数为不同的文件描述符提供不同的地址用于映射
 	va = fd2data(fd);
 	ffd = (struct Filefd *)fd;
 	size = ffd->f_file.f_size;
@@ -52,12 +62,18 @@ int open(const char *path, int mode) {
 	// Step 4: Map the file content using 'fsipc_map'.
 	for (int i = 0; i < size; i += PTMAP) {
 		/* Exercise 5.9: Your code here. (4/5) */
+		// 接着我们将文件所有的内容都从磁盘中映射到内存
+		// 注意这里要映射到的地址为 va + i 而非 va
+		// 使用后者在 Lab6 中加载更大文件时会出现 bug
 		try(fsipc_map(fileid, i, va + i));
 	}
 
 	// Step 5: Return the number of file descriptor using 'fd2num'.
 	/* Exercise 5.9: Your code here. (5/5) */
+	// 使用 fd2num 方法获取文件描述符在文件描述符数组中的索引
 	return fd2num(fd);
+	// 所以说我们在Linux中使用的文件操作系列函数时使用的整型文件描述符
+	// 其本质是结构体型文件描述符在文件描述符数组中的索引
 }
 
 // Overview:
@@ -107,6 +123,7 @@ int file_close(struct Fd *fd) {
 //  Read 'n' bytes from 'fd' at the current seek position into 'buf'. Since files
 //  are memory-mapped, this amounts to a memcpy() surrounded by a little red
 //  tape to handle the file size and seek pointer.
+// 读取被映射到内存中的文件内容
 static int file_read(struct Fd *fd, void *buf, u_int n, u_int offset) {
 	u_int size;
 	struct Filefd *f;

@@ -16,15 +16,18 @@
  * o_ff: va of filefd page
  */
 struct Open {
-	struct File *o_file;
-	u_int o_fileid;
-	int o_mode;
-	struct Filefd *o_ff;
+	struct File *o_file; // 文件
+	u_int o_fileid; // 文件 id
+	int o_mode; // 文件打开模式
+	struct Filefd *o_ff; // 文件描述符
+	// 在将文件描述符共享到用户进程时
+	// 实际上共享的是 Filefd
 };
 
 /*
  * Max number of open files in the file system at once
  */
+// 文件最大打开数量
 #define MAXOPEN 1024
 
 #define FILEVA 0x60000000
@@ -32,6 +35,7 @@ struct Open {
 /*
  * Open file table, a per-environment array of open files
  */
+// 记录整个操作系统中所有处于打开状态的文件
 struct Open opentab[MAXOPEN];
 
 /*
@@ -43,19 +47,24 @@ struct Open opentab[MAXOPEN];
  * Overview:
  *  Set up open file table and connect it with the file cache.
  */
+// 设置打开文件表并将其连接到文件缓存
 void serve_init(void) {
 	int i;
 	u_int va;
 
 	// Set virtual address to map.
+	// 设置映射的虚拟地址
 	va = FILEVA;
 
 	// Initial array opentab.
+	// 初始化打开文件表数组
 	for (i = 0; i < MAXOPEN; i++) {
 		opentab[i].o_fileid = i;
 		opentab[i].o_ff = (struct Filefd *)va;
+		// 每个 Filefd 分配一页
 		va += BLOCK_SIZE;
 	}
+	// 所有的 Filefd 都存储在 [FILEVA, FILEVA + PDMAP) 的地址空间中
 }
 
 /*
@@ -66,21 +75,37 @@ void serve_init(void) {
  * Return:
  * 0 on success, - E_MAX_OPEN on error
  */
+// 申请一个未使用的 struct Open 元素
 int open_alloc(struct Open **o) {
 	int i, r;
 
 	// Find an available open-file table entry
 	for (i = 0; i < MAXOPEN; i++) {
+		// 通过查看 Filefd 地址的页表项是否有效判断 struct Open 元素是否被使用
+		// 函数 pageref 用于获取某一页的引用数量
 		switch (pageref(opentab[i].o_ff)) {
+		// 所有 Filefd 都没有被访问过
 		case 0:
+			// 先使用系统调用 syscall_mem_alloc 申请一个物理页
+			// PTE_LIBRARY 表示该页面可以被共享
 			if ((r = syscall_mem_alloc(0, opentab[i].o_ff, PTE_D | PTE_LIBRARY)) < 0) {
 				return r;
 			}
+			// 注意这里没有使用 break; 分隔
+		// 曾经被使用过
+		// 但现在不被任何用户进程使用
+		// 只有服务进程还保留引用
 		case 1:
+			// 不知为何删除了 opentab[i].o_field += MAXOPEN; 这一句
 			*o = &opentab[i];
+			// 将对应的文件描述符 o_ff 的内容清零
 			memset((void *)opentab[i].o_ff, 0, BLOCK_SIZE);
 			return (*o)->o_fileid;
 		}
+		// 在我们的文件系统中是会出现将 Filefd 共享到用户进程的情况
+		// 这时因为 switch 的 case 中只有 1 和 2
+		// 会跳过这次循环
+		// 这样我们就将正在使用的文件排除在外了
 	}
 
 	return -E_MAX_OPEN;
@@ -147,6 +172,7 @@ void serve_open(u_int envid, struct Fsreq_open *rq) {
 	struct Open *o;
 
 	// Find a file id.
+	// 申请一个存储文件打开信息的 struct Open
 	if ((r = open_alloc(&o)) < 0) {
 		ipc_send(envid, r, 0, 0);
 		return;
@@ -159,12 +185,15 @@ void serve_open(u_int envid, struct Fsreq_open *rq) {
 	}
 
 	// Open the file.
+	// 打开文件
 	if ((r = file_open(rq->req_path, &f)) < 0) {
 		ipc_send(envid, r, 0, 0);
 		return;
 	}
 
 	// Save the file pointer.
+	// 将 file_open 返回的文件控制块结构体设置到 struct Open 结构体
+	// 表示新打开的文件为该文件
 	o->o_file = f;
 
 	// If mode include O_TRUNC, set the file size to 0
@@ -175,12 +204,15 @@ void serve_open(u_int envid, struct Fsreq_open *rq) {
 	}
 
 	// Fill out the Filefd structure
+	// 设置一系列字段的值
 	ff = (struct Filefd *)o->o_ff;
 	ff->f_file = *f;
 	ff->f_fileid = o->o_fileid;
 	o->o_mode = rq->req_omode;
 	ff->f_fd.fd_omode = o->o_mode;
+	// 设置文件描述符对应的设备为 devfile
 	ff->f_fd.fd_dev_id = devfile.dev_id;
+	// 调用 ipc_send 返回将文件描述符 o->o_ff 与用户进程共享
 	ipc_send(envid, 0, o->o_ff, PTE_D | PTE_LIBRARY);
 }
 
@@ -354,10 +386,14 @@ void *serve_table[MAX_FSREQNO] = {
  *  call the corresponding serve function with the reqeust number
  *  to handle the request.
  */
+// 开启文件系统服务
 void serve(void) {
 	u_int req, whom, perm;
 	void (*func)(u_int, u_int);
 
+	// 死循环
+	// 根据请求类型的不同分发给不同的处理函数进行处理
+	// 并进行回复
 	for (;;) {
 		perm = 0;
 
@@ -381,6 +417,9 @@ void serve(void) {
 		func(whom, REQVA);
 
 		// Unmap the argument page.
+		// 在完成处理后
+		// 取消接收消息时的页面共享
+		// 为下一次接收做准备
 		panic_on(syscall_mem_unmap(0, (void *)REQVA));
 	}
 }
@@ -391,14 +430,18 @@ void serve(void) {
  *  It will call the `serve_init` to initialize the file system
  *  and then call the `serve` to handle the requests.
  */
+// 文件系统服务进程主函数
 int main() {
 	user_assert(sizeof(struct File) == FILE_STRUCT_SIZE);
 
 	debugf("FS is running\n");
 
+	// 初始化打开文件表
 	serve_init();
+	// 初始化文件系统
 	fs_init();
 
+	// 处理请求
 	serve();
 	return 0;
 }
