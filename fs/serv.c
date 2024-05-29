@@ -199,6 +199,20 @@ void serve_open(u_int envid, struct Fsreq_open *rq) {
 		return;
 	}
 
+	// extra
+	if (rq->req_omode == O_RDONLY && (f->f_mode & 0x4) == 0) {
+		ipc_send(envid, -E_PERM_DENY, 0, 0);
+		return;
+	}
+	if (rq->req_omode == O_WRONLY && (f->f_mode & 0x2) == 0) {
+		ipc_send(envid, -E_PERM_DENY, 0, 0);
+		return;
+	}
+	if (rq->req_omode == O_RDWR && ((f->f_mode & 0x4) == 0 || (f->f_mode & 0x2 == 0))) {
+		ipc_send(envid, -E_PERM_DENY, 0, 0);
+		return;
+	}
+
 	// Save the file pointer.
 	// 将 file_open 返回的文件控制块结构体设置到 struct Open 结构体
 	// 表示新打开的文件为该文件
@@ -394,6 +408,25 @@ void serve_sync(u_int envid) {
 	ipc_send(envid, 0, 0, 0);
 }
 
+// extra
+void serve_chmod(u_int envid, struct Fsreq_chmod *rq) {
+	int r;
+	struct File *f;
+	if ((r = file_open(rq->req_path, &f)) < 0) {
+		ipc_send(envid, r, 0, 0);
+		return;
+	}
+	if (rq->req_type == 0) {
+		f->f_mode = rq->req_mode;
+	} else if (rq->req_type == 1) {
+		f->f_mode |= rq->req_mode;
+	} else {
+		f->f_mode &= ~(rq->req_mode);
+	}
+	file_close(f);
+	ipc_send(envid, 0, 0, 0);
+}
+
 /*
  * The serve function table
  * File system use this table and the request number to
@@ -408,6 +441,7 @@ void *serve_table[MAX_FSREQNO] = {
 	[FSREQ_DIRTY] = serve_dirty,
 	[FSREQ_REMOVE] = serve_remove,
     [FSREQ_SYNC] = serve_sync,
+    [FSREQ_CHMOD] = serve_chmod,
 };
 
 /*

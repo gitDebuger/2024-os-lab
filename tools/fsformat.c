@@ -147,6 +147,9 @@ void init_disk() {
 	super.s_nblocks = NBLOCK; // 磁盘块个数
 	super.s_root.f_type = FTYPE_DIR; // 根目录文件起点 s_root
 	strcpy(super.s_root.f_name, "/");
+
+	// extra
+	super.s_root.f_mode = FMODE_ALL;
 }
 
 // Get next block id, and set `type` to the block's type.
@@ -320,6 +323,11 @@ void write_file(struct File *dirf, const char *path) {
 	target->f_size = lseek(fd, 0, SEEK_END);
 	target->f_type = FTYPE_REG;
 
+	// extra
+	struct stat stat_buf;
+	assert(stat(path, &stat_buf) == 0);
+	target->f_mode = STMODE2FMODE(stat_buf.st_mode);
+
 	// Start reading file.
 	// 开始读取文件内容并写入磁盘镜像文件中
 	lseek(fd, 0, SEEK_SET);
@@ -360,6 +368,12 @@ void write_directory(struct File *dirf, char *path) {
 		exit(1);
 	}
 	pdir->f_type = FTYPE_DIR;
+
+	// extra
+	struct stat stat_buf;
+	assert(stat(path, &stat_buf) == 0);
+	pdir->f_mode = STMODE2FMODE(stat_buf.st_mode);
+
 	// 遍历宿主机上该路径下所有文件
 	// 如果是目录则递归执行 write_directory 函数
 	// 如果是普通文件则执行 write_file 函数
