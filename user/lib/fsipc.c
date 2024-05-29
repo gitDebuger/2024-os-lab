@@ -66,6 +66,9 @@ int fsipc_open(const char *path, u_int omode, struct Fd *fd) {
 // Returns:
 //  0 on success,
 //  < 0 on failure.
+/* 向文件服务发出一个映射块请求 */
+/* 我们发送 fileid 和文件中块的偏移量 */
+/* 服务器向我们返回包含该块的页面的映射 */
 int fsipc_map(u_int fileid, u_int offset, void *dstva) {
 	int r;
 	u_int perm;
@@ -88,6 +91,7 @@ int fsipc_map(u_int fileid, u_int offset, void *dstva) {
 
 // Overview:
 //  Make a set-file-size request to the file server.
+/* 向文件系统服务发送设置文件大小的服务请求 */
 int fsipc_set_size(u_int fileid, u_int size) {
 	struct Fsreq_set_size *req;
 
@@ -99,6 +103,7 @@ int fsipc_set_size(u_int fileid, u_int size) {
 
 // Overview:
 //  Make a file-close request to the file server. After this the fileid is invalid.
+/* 向文件系统服务发送关闭文件的服务请求 */
 int fsipc_close(u_int fileid) {
 	struct Fsreq_close *req;
 
@@ -109,6 +114,7 @@ int fsipc_close(u_int fileid) {
 
 // Overview:
 //  Ask the file server to mark a particular file block dirty.
+/* 标记文件已修改 */
 int fsipc_dirty(u_int fileid, u_int offset) {
 	struct Fsreq_dirty *req;
 
@@ -120,6 +126,7 @@ int fsipc_dirty(u_int fileid, u_int offset) {
 
 // Overview:
 //  Ask the file server to delete a file, given its path.
+/* 删除文件 */
 int fsipc_remove(const char *path) {
 	// Step 1: Check the length of 'path' using 'strlen'.
 	// If the length of path is 0 or larger than 'MAXPATHLEN', return -E_BAD_PATH.
@@ -144,6 +151,7 @@ int fsipc_remove(const char *path) {
 // Overview:
 //  Ask the file server to update the disk by writing any dirty
 //  blocks in the buffer cache.
+/* 同步磁盘与缓冲区 */
 int fsipc_sync(void) {
 	return fsipc(FSREQ_SYNC, fsipcbuf, 0, 0);
 }

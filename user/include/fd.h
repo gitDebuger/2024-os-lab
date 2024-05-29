@@ -42,6 +42,7 @@ struct Fd {
 };
 
 // State
+// 不明结构体
 struct Stat {
 	char st_name[MAXNAMELEN];
 	u_int st_size;
@@ -50,10 +51,11 @@ struct Stat {
 };
 
 // file descriptor + file
+/* 文件描述符加上文件结构体 */
 struct Filefd {
-	struct Fd f_fd;
-	u_int f_fileid;
-	struct File f_file;
+	struct Fd f_fd; // 文件描述符
+	u_int f_fileid; // 文件编号
+	struct File f_file; // 文件
 };
 
 int fd_alloc(struct Fd **fd);

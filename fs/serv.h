@@ -4,14 +4,18 @@
 
 #define PTE_DIRTY 0x0004 // file system block cache is dirty
 
+/* 磁盘扇区大小 */
 #define SECT_SIZE 512			  /* Bytes per disk sector */
+/* 每个磁盘块中扇区数 */
 #define SECT2BLK (BLOCK_SIZE / SECT_SIZE) /* sectors to a block */
 
 /* Disk block n, when in memory, is mapped into the file system
  * server's address space at DISKMAP+(n*BLOCK_SIZE). */
+/* 磁盘映射到内存的起始地址 */
 #define DISKMAP 0x10000000
 
 /* Maximum disk size we can handle (1GB) */
+/* 我们能够处理的最大磁盘大小为 1GB */
 #define DISKMAX 0x40000000
 
 /* ide.c */

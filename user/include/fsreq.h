@@ -19,6 +19,10 @@ enum {
 	MAX_FSREQNO,
 };
 
+/* 发送服务请求需要使用的结构体 */
+/* 这些结构体存储文件系统服务程序所需的信息 */
+/* 结构体通过映射页面发送 */
+
 struct Fsreq_open {
 	char req_path[MAXPATHLEN];
 	u_int req_omode;

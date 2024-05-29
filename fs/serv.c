@@ -2,6 +2,8 @@
  * File system server main loop -
  * serves IPC requests from other environments.
  */
+/* 文件系统服务主循环 */
+/* 服务来自其他进程通过 IPC 通信请求的文件服务 */
 
 #include "serv.h"
 #include <fd.h>
@@ -19,7 +21,7 @@ struct Open {
 	struct File *o_file; // 文件
 	u_int o_fileid; // 文件 id
 	int o_mode; // 文件打开模式
-	struct Filefd *o_ff; // 文件描述符
+	struct Filefd *o_ff; // 文件描述符加文件
 	// 在将文件描述符共享到用户进程时
 	// 实际上共享的是 Filefd
 };
@@ -41,6 +43,7 @@ struct Open opentab[MAXOPEN];
 /*
  * Virtual address at which to receive page mappings containing client requests.
  */
+/* 接收包含客户端请求的页面映射的虚拟地址 */
 #define REQVA 0x0ffff000
 
 /*
@@ -59,8 +62,8 @@ void serve_init(void) {
 	// Initial array opentab.
 	// 初始化打开文件表数组
 	for (i = 0; i < MAXOPEN; i++) {
-		opentab[i].o_fileid = i;
-		opentab[i].o_ff = (struct Filefd *)va;
+		opentab[i].o_fileid = i; // 设置文件编号
+		opentab[i].o_ff = (struct Filefd *)va; // 设置文件描述符加文件
 		// 每个 Filefd 分配一页
 		va += BLOCK_SIZE;
 	}
@@ -125,6 +128,7 @@ int open_alloc(struct Open **o) {
  * 0 on success, -E_INVAL on error (fileid illegal or file not open by envid)
  *
  */
+/* 为指定 envid 的进程搜索指定 fileid 的文件 */
 int open_lookup(u_int envid, u_int fileid, struct Open **po) {
 	struct Open *o;
 
@@ -165,6 +169,10 @@ int open_lookup(u_int envid, u_int fileid, struct Open **po) {
  * if Success, return the FileFd page to the caller by ipc_send,
  * Otherwise, use ipc_send to return the error value to the caller.
  */
+/* 打开 rq 中指定路径的文件 */
+/* 它将尝试分配一个打开描述符 */
+/* 打开文件然后将信息保存在文件描述符中 */
+/* 如果一切都完成了它将使用 ipc_send 返回 FileFd 页面给调用者 */
 void serve_open(u_int envid, struct Fsreq_open *rq) {
 	struct File *f;
 	struct Filefd *ff;
@@ -229,6 +237,10 @@ void serve_open(u_int envid, struct Fsreq_open *rq) {
  *  if Success, use ipc_send to return zero and  the block to
  *  the caller.Otherwise, return the error value to the caller.
  */
+/* 用于映射 rq 中字段 fileid 指定的文件 */
+/* 它将使用 fileid 和 envid 来查找打开的文件 */
+/* 然后调用 file_get_block 来获取该块 */
+/* 并使用 ipc_send 将该块返回给调用者。 */
 void serve_map(u_int envid, struct Fsreq_map *rq) {
 	struct Open *pOpen;
 	u_int filebno;
@@ -262,6 +274,9 @@ void serve_map(u_int envid, struct Fsreq_map *rq) {
  * if Success, use ipc_send to return 0 to the caller. Otherwise,
  * return the error value to the caller.
  */
+/* 用于设置 rq 中字段 fileid 指定的文件大小 */
+/* 它尝试使用 open_lookup 函数来查找打开的文件 */
+/* 然后调用 file_set_size 来设置文件的大小 */
 void serve_set_size(u_int envid, struct Fsreq_set_size *rq) {
 	struct Open *pOpen;
 	int r;
@@ -290,6 +305,9 @@ void serve_set_size(u_int envid, struct Fsreq_set_size *rq) {
  *  if Success, use ipc_send to return 0 to the caller.Otherwise,
  *  return the error value to the caller.
  */
+/* 用于关闭 rq 中 fileid 指定的文件 */
+/* 它将使用 fileid 和 envid 来查找打开的文件 */
+/* 然后调用 file_close 来关闭文件 */
 void serve_close(u_int envid, struct Fsreq_close *rq) {
 	struct Open *pOpen;
 
@@ -315,6 +333,9 @@ void serve_close(u_int envid, struct Fsreq_close *rq) {
  * Return:
  *  the result of the file_remove to the caller by ipc_send.
  */
+/* 用于删除 req 中指定路径的文件 */
+/* 它调用 file_remove 来删除文件 */
+/* 然后使用 ipc_send 将结果返回给调用者 */
 void serve_remove(u_int envid, struct Fsreq_remove *rq) {
 	// Step 1: Remove the file specified in 'rq' using 'file_remove' and store its return value.
 	int r;
@@ -338,6 +359,9 @@ void serve_remove(u_int envid, struct Fsreq_remove *rq) {
  *  if Success, use ipc_send to return 0 to the caller. Otherwise,
  *  return the error value to the caller.
  */
+/* 用于标记文件已修改 */
+/* 它将使用 fileid 和 envid 来查找打开的文件 */
+/* 然后调用 file_dirty 来标记文件已修改 */
 void serve_dirty(u_int envid, struct Fsreq_dirty *rq) {
 	struct Open *pOpen;
 	int r;
@@ -362,6 +386,9 @@ void serve_dirty(u_int envid, struct Fsreq_dirty *rq) {
  *  and then use the `ipc_send` and `return` 0 to tell the caller
  *  file system is synced.
  */
+/* 用于同步文件系统 */
+/* 它调用 fs_sync 来同步文件系统 */
+/* 然后使用 ipc_send 并返回 0 来告诉调用方文件系统已同步 */
 void serve_sync(u_int envid) {
 	fs_sync();
 	ipc_send(envid, 0, 0, 0);
@@ -372,9 +399,14 @@ void serve_sync(u_int envid) {
  * File system use this table and the request number to
  * call the corresponding serve function.
  */
+/* 文件系统服务调用向量表 */
 void *serve_table[MAX_FSREQNO] = {
-    [FSREQ_OPEN] = serve_open,	 [FSREQ_MAP] = serve_map,     [FSREQ_SET_SIZE] = serve_set_size,
-    [FSREQ_CLOSE] = serve_close, [FSREQ_DIRTY] = serve_dirty, [FSREQ_REMOVE] = serve_remove,
+    [FSREQ_OPEN] = serve_open,
+	[FSREQ_MAP] = serve_map,
+	[FSREQ_SET_SIZE] = serve_set_size,
+    [FSREQ_CLOSE] = serve_close,
+	[FSREQ_DIRTY] = serve_dirty,
+	[FSREQ_REMOVE] = serve_remove,
     [FSREQ_SYNC] = serve_sync,
 };
 
@@ -386,7 +418,10 @@ void *serve_table[MAX_FSREQNO] = {
  *  call the corresponding serve function with the reqeust number
  *  to handle the request.
  */
-// 开启文件系统服务
+/* 文件系统服务主循环 */
+/* 它接收来自其他进程的请求 */
+/* 如果没有请求内核将调度其他进程 */
+/* 否则它将使用请求号调用相应的服务函数来处理请求 */
 void serve(void) {
 	u_int req, whom, perm;
 	void (*func)(u_int, u_int);
@@ -442,6 +477,9 @@ int main() {
 	fs_init();
 
 	// 处理请求
+	// 死循环函数
+	// 如果服务不会出现错误
+	// 则该主函数永远不会返回
 	serve();
 	return 0;
 }

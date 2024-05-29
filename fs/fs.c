@@ -11,6 +11,10 @@ int block_is_free(u_int);
 // Overview:
 //  Return the virtual address of this disk block in cache.
 // Hint: Use 'DISKMAP' and 'BLOCK_SIZE' to calculate the address.
+/* 返回磁盘块在缓存中的虚拟地址 */
+/* 这里需要说明一点 */
+/* 所有的磁盘块都有且只有唯一的虚拟地址与之对应 */
+/* 也就是说不会有虚拟地址对应多个磁盘块 */
 void *disk_addr(u_int blockno) {
 	/* Exercise 5.6: Your code here. */
 	return DISKMAP + blockno * BLOCK_SIZE;
@@ -18,6 +22,7 @@ void *disk_addr(u_int blockno) {
 
 // Overview:
 //  Check if this virtual address is mapped to a block. (check PTE_V bit)
+/* 检查虚拟地址是否映射到磁盘块 */
 int va_is_mapped(void *va) {
 	return (vpd[PDX(va)] & PTE_V) && (vpt[VPN(va)] & PTE_V);
 }
@@ -37,12 +42,15 @@ void *block_is_mapped(u_int blockno) {
 
 // Overview:
 //  Check if this virtual address is dirty. (check PTE_DIRTY bit)
+/* 通过检查页表的脏位以检查虚拟地址是否被修改 */
 int va_is_dirty(void *va) {
 	return vpt[VPN(va)] & PTE_DIRTY;
 }
 
 // Overview:
 //  Check if this block is dirty. (check corresponding `va`)
+/* 检查磁盘块是否被修改 */
+/* 检查磁盘块是否被映射且虚拟地址是否被修改 */
 int block_is_dirty(u_int blockno) {
 	void *va = disk_addr(blockno);
 	return va_is_mapped(va) && va_is_dirty(va);
@@ -50,6 +58,8 @@ int block_is_dirty(u_int blockno) {
 
 // Overview:
 //  Mark this block as dirty (cache page has changed and needs to be written back to disk).
+/* 标记磁盘块被修改 */
+/* 缓存页已经被修改且需要被写回到磁盘中 */
 int dirty_block(u_int blockno) {
 	void *va = disk_addr(blockno);
 
@@ -66,13 +76,16 @@ int dirty_block(u_int blockno) {
 
 // Overview:
 //  Write the current contents of the block out to disk.
+/* 将当前块的内容写出到磁盘 */
 void write_block(u_int blockno) {
 	// Step 1: detect is this block is mapped, if not, can't write it's data to disk.
+	/* 检查磁盘块是否被映射 */
 	if (!block_is_mapped(blockno)) {
 		user_panic("write unmapped block %08x", blockno);
 	}
 
 	// Step2: write data to IDE disk. (using ide_write, and the diskno is 0)
+	/* 将数据写入到磁盘 */
 	void *va = disk_addr(blockno);
 	ide_write(0, blockno * SECT2BLK, va, SECT2BLK);
 }
@@ -95,6 +108,8 @@ void write_block(u_int blockno) {
 // 读取对应磁盘块编号的磁盘块数据到内存
 int read_block(u_int blockno, void **blk, u_int *isnew) {
 	// Step 1: validate blockno. Make file the block to read is within the disk.
+	/* 验证 blockno 确保将要读取的文件块位于磁盘内 */
+	/* 也就是说这里检查越界错误 */
 	if (super && blockno >= super->s_nblocks) {
 		user_panic("reading non-existent block %08x\n", blockno);
 	}
@@ -104,15 +119,17 @@ int read_block(u_int blockno, void **blk, u_int *isnew) {
 	//  If the bitmap is NULL, indicate that we haven't read bitmap from disk to memory
 	//  until now. So, before we check if a block is free using `block_is_free`, we must
 	//  ensure that the bitmap blocks are already read from the disk to memory.
+	/* 验证磁盘块已经被使用而不是空闲 */
 	if (bitmap && block_is_free(blockno)) {
 		user_panic("reading free block %08x\n", blockno);
 	}
 
 	// Step 3: transform block number to corresponding virtual address.
-	// 获取磁盘块编号应该存储到的地址
+	// 获取磁盘块对应的虚拟地址
 	void *va = disk_addr(blockno);
 
 	// Step 4: read disk and set *isnew.
+	/* 读磁盘并设置 *isnew 的值 */
 	// Hint:
 	//  If this block is already mapped, just set *isnew, else alloc memory and
 	//  read data from IDE disk (use `syscall_mem_alloc` and `ide_read`).
@@ -144,7 +161,7 @@ int read_block(u_int blockno, void **blk, u_int *isnew) {
 
 // Overview:
 //  Allocate a page to cache the disk block.
-// 申请一个页面用于存储磁盘块内容
+// 申请一个页面用于缓存磁盘块内容
 int map_block(u_int blockno) {
 	// Step 1: If the block is already mapped in cache, return 0.
 	// Hint: Use 'block_is_mapped'.
@@ -161,16 +178,19 @@ int map_block(u_int blockno) {
 
 // Overview:
 //  Unmap a disk block in cache.
+/* 取消磁盘块在缓存中的映射 */
 void unmap_block(u_int blockno) {
 	// Step 1: Get the mapped address of the cache page of this block using 'block_is_mapped'.
 	void *va;
 	/* Exercise 5.7: Your code here. (3/5) */
+	/* 获取该磁盘块映射到的缓存页 */
 	va = block_is_mapped(blockno);
 
 	// Step 2: If this block is used (not free) and dirty in cache, write it back to the disk
 	// first.
 	// Hint: Use 'block_is_free', 'block_is_dirty' to check, and 'write_block' to sync.
 	/* Exercise 5.7: Your code here. (4/5) */
+	/* 如果磁盘块不是空闲且已经被修改 */
 	if (!block_is_free(blockno) && block_is_dirty(blockno)) {
 		// 将内存中对磁盘块的修改写回磁盘
 		write_block(blockno);
@@ -178,8 +198,10 @@ void unmap_block(u_int blockno) {
 
 	// Step 3: Unmap the virtual address via syscall.
 	/* Exercise 5.7: Your code here. (5/5) */
+	/* 取消虚拟地址的映射 */
 	syscall_mem_unmap(env->env_id, va);
 
+	/* 断言取消映射是否成功 */
 	user_assert(!block_is_mapped(blockno));
 }
 
@@ -188,6 +210,7 @@ void unmap_block(u_int blockno) {
 //
 // Post-Condition:
 //  Return 1 if the block is free, else 0.
+/* 使用位视图检查磁盘块是否空闲 */
 int block_is_free(u_int blockno) {
 	if (super == 0 || blockno >= super->s_nblocks) {
 		return 0;
@@ -202,11 +225,12 @@ int block_is_free(u_int blockno) {
 
 // Overview:
 //  Mark a block as free in the bitmap.
+/* 在位视图中标记磁盘块空闲 */
 void free_block(u_int blockno) {
 	// You can refer to the function 'block_is_free' above.
 	// Step 1: If 'blockno' is invalid (0 or >= the number of blocks in 'super'), return.
 	/* Exercise 5.4: Your code here. (1/2) */
-	if (super == 0 || blockno >= super->s_nblocks) {
+	if (super == 0 || blockno == 0 || blockno >= super->s_nblocks) {
 		return;
 	}
 
@@ -222,10 +246,13 @@ void free_block(u_int blockno) {
 // Post-Condition:
 //  Return block number allocated on success,
 //  Return -E_NO_DISK if we are out of blocks.
+/* 寻找空闲磁盘块并分配 */
 int alloc_block_num(void) {
 	int blockno;
 	// walk through this bitmap, find a free one and mark it as used, then sync
 	// this block to IDE disk (using `write_block`) from memory.
+	/* 遍历位视图寻找空闲磁盘块并将其标记为已使用 */
+	/* 然后将位视图的内容从内存同步到 IDE 磁盘 */
 	for (blockno = 3; blockno < super->s_nblocks; blockno++) {
 		if (bitmap[blockno / 32] & (1 << (blockno % 32))) { // the block is free
 			bitmap[blockno / 32] &= ~(1 << (blockno % 32));
@@ -234,6 +261,7 @@ int alloc_block_num(void) {
 		}
 	}
 	// no free blocks.
+	/* 没有空闲磁盘块 */
 	return -E_NO_DISK;
 }
 
@@ -260,6 +288,7 @@ int alloc_block(void) {
 	}
 
 	// Step 3: return block number.
+	// 返回磁盘块编号
 	return bno;
 }
 
@@ -327,10 +356,12 @@ void read_bitmap(void) {
 
 	// Step 2: Make sure the reserved and root blocks are marked in-use.
 	// Hint: use `block_is_free`
+	/* 确保保留块和根磁盘块标记为已使用 */
 	user_assert(!block_is_free(0));
 	user_assert(!block_is_free(1));
 
 	// Step 3: Make sure all bitmap blocks are marked in-use.
+	/* 确保所有的存储位视图的磁盘块标记为已使用 */
 	for (i = 0; i < nbitmap; i++) {
 		user_assert(!block_is_free(i + 2));
 	}
@@ -340,6 +371,7 @@ void read_bitmap(void) {
 
 // Overview:
 //  Test that write_block works, by smashing the superblock and reading it back.
+/* 一段测试代码 */
 void check_write_block(void) {
 	super = 0;
 
@@ -402,6 +434,7 @@ int file_block_walk(struct File *f, u_int filebno, uint32_t **ppdiskbno, u_int a
 	uint32_t *ptr;
 	uint32_t *blk;
 
+	/* 根据文件中磁盘块编号找到总磁盘块编号 */
 	if (filebno < NDIRECT) {
 		// Step 1: if the target block is corresponded to a direct pointer, just return the
 		// disk block number.
@@ -425,12 +458,15 @@ int file_block_walk(struct File *f, u_int filebno, uint32_t **ppdiskbno, u_int a
 		if ((r = read_block(f->f_indirect, (void **)&blk, 0)) < 0) {
 			return r;
 		}
+		/* 这里使用 blk + filebno 而不是 blk + filebno - 10 */
+		/* 因为页面的前十个 u_int 保留不用从而方便计算 */
 		ptr = blk + filebno;
 	} else {
 		return -E_INVAL;
 	}
 
 	// Step 4: store the result into *ppdiskbno, and return 0.
+	// 将结果存入 *ppdiskbno 中并返回
 	*ppdiskbno = ptr;
 	return 0;
 }
@@ -446,6 +482,8 @@ int file_block_walk(struct File *f, u_int filebno, uint32_t **ppdiskbno, u_int a
 //   -E_NO_DISK: if a block needed to be allocated but the disk is full.
 //   -E_NO_MEM: if we're out of memory.
 //   -E_INVAL: if filebno is out of range.
+/* 寻找文件中的第 filebno 个磁盘块映射到的磁盘块 */
+/* 如果允许创建则创建之 */
 int file_map_block(struct File *f, u_int filebno, u_int *diskbno, u_int alloc) {
 	int r;
 	uint32_t *ptr;
@@ -458,7 +496,7 @@ int file_map_block(struct File *f, u_int filebno, u_int *diskbno, u_int alloc) {
 	// 文件的第 filebno 个磁盘块对应的磁盘块编号现在已经被存储在了 *ptr
 
 	// Step 2: if the block not exists, and create is set, alloc one.
-	// 考虑未找到时再调用 alloc_block 申请一个磁盘块的情况
+	// 考虑未找到且允许创建时再调用 alloc_block 申请一个磁盘块的情况
 	if (*ptr == 0) {
 		if (alloc == 0) {
 			return -E_NOT_FOUND;
@@ -471,13 +509,15 @@ int file_map_block(struct File *f, u_int filebno, u_int *diskbno, u_int alloc) {
 	}
 
 	// Step 3: set the pointer to the block in *diskbno and return 0.
-	// 最后将文件的第 filebno 个磁盘块对应的磁盘块编号传给 *diskbn
+	// 最后将文件的第 filebno 个磁盘块对应的磁盘块编号传给 *diskbno
 	*diskbno = *ptr;
 	return 0;
 }
 
 // Overview:
 //  Remove a block from file f. If it's not there, just silently succeed.
+/* 从文件中移除一个磁盘块 */
+/* 如果不存在映射的磁盘块则默认成功 */
 int file_clear_block(struct File *f, u_int filebno) {
 	int r;
 	uint32_t *ptr;
@@ -523,6 +563,7 @@ int file_get_block(struct File *f, u_int filebno, void **blk) {
 
 // Overview:
 //  Mark the offset/BLOCK_SIZE'th block dirty in file f.
+/* 标记文件偏移量为 offset 处对应的磁盘块已修改 */
 int file_dirty(struct File *f, u_int offset) {
 	int r;
 	u_int diskbno;
@@ -560,6 +601,7 @@ int dir_lookup(struct File *dir, char *name, struct File **file) {
 		struct File *files = (struct File *)blk;
 
 		// Find the target among all 'File's in this block.
+		/* 在这一磁盘块的所有 File 结构体中寻找匹配的磁盘块 */
 		for (struct File *f = files; f < files + FILE2BLK; ++f) {
 			// Compare the file name against 'name' using 'strcmp'.
 			// If we find the target file, set '*file' to it and set up its 'f_dir'
@@ -579,6 +621,7 @@ int dir_lookup(struct File *dir, char *name, struct File **file) {
 // Overview:
 //  Alloc a new File structure under specified directory. Set *file
 //  to point at a free File structure in dir.
+/* 在特定目录下申请新的 File 结构体 */
 int dir_alloc_file(struct File *dir, struct File **file) {
 	int r;
 	u_int nblock, i, j;
@@ -596,6 +639,7 @@ int dir_alloc_file(struct File *dir, struct File **file) {
 		f = blk;
 
 		for (j = 0; j < FILE2BLK; j++) {
+			/* 找到空闲的 File 结构体  */
 			if (f[j].f_name[0] == '\0') { // found free File structure.
 				*file = &f[j];
 				return 0;
@@ -605,11 +649,16 @@ int dir_alloc_file(struct File *dir, struct File **file) {
 
 	// no free File structure in exists data block.
 	// new data block need to be created.
+	/* 如果没有空闲的 File 结构体 */
+	/* 那么就创建新的数据块用于存储 File 结构体 */
 	dir->f_size += BLOCK_SIZE;
 	if ((r = file_get_block(dir, i, &blk)) < 0) {
 		return r;
 	}
+	/* 这块就是新的数据块的地址和新的 File 结构体地址相同 */
 	f = blk;
+	/* 这个也很奇怪 */
+	/* 为什么不直接写 *file = f 呢 */
 	*file = &f[0];
 
 	return 0;
@@ -617,6 +666,7 @@ int dir_alloc_file(struct File *dir, struct File **file) {
 
 // Overview:
 //  Skip over slashes.
+/* 跳过文件路径分隔符 */
 char *skip_slash(char *p) {
 	while (*p == '/') {
 		p++;
@@ -679,6 +729,10 @@ int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastele
 					*pdir = dir;
 				}
 
+				/* 保存最后一个路径节点 */
+				/* 比如 /root/dev/www/index.html */
+				/* 如果当前是在 dev 下寻找 www */
+				/* 则保存 www 到 lastelem 中 */
 				if (lastelem) {
 					strcpy(lastelem, name);
 				}
@@ -691,9 +745,11 @@ int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastele
 	}
 
 	if (pdir) {
+		/* 保存要寻找的文件所在目录 */
 		*pdir = dir;
 	}
 
+	/* 保存要寻找的文件的 File 结构体 */
 	*pfile = file;
 	return 0;
 }
@@ -704,7 +760,9 @@ int walk_path(char *path, struct File **pdir, struct File **pfile, char *lastele
 // Post-Condition:
 //  On success set *pfile to point at the file and return 0.
 //  On error return < 0.
-// 打开 path 对应的文件
+/* 打开 path 路径指定的文件 */
+/* 不保存文件所在目录 */
+/* 不保存最后一个路径节点 */
 int file_open(char *path, struct File **file) {
 	return walk_path(path, 0, file, 0);
 }
@@ -715,23 +773,30 @@ int file_open(char *path, struct File **file) {
 // Post-Condition:
 //  On success set *file to point at the file and return 0.
 //  On error return < 0.
+/* 创建文件 */
+/* 注意这个函数没有递归创建目录的能力 */
 int file_create(char *path, struct File **file) {
 	char name[MAXNAMELEN];
 	int r;
 	struct File *dir, *f;
 
+	/* 检查是否存在同名文件 */
 	if ((r = walk_path(path, &dir, &f, name)) == 0) {
 		return -E_FILE_EXISTS;
 	}
 
+	/* 如果不是未找到文件或者 dir 没有赋值成功 */
+	/* 这个检查是不是不太充分？ */
 	if (r != -E_NOT_FOUND || dir == 0) {
 		return r;
 	}
 
+	/* 在路径下申请文件结构体 */
 	if (dir_alloc_file(dir, &f) < 0) {
 		return r;
 	}
 
+	/* 拷贝文件名到 File 结构体并返回 */
 	strcpy(f->f_name, name);
 	*file = f;
 	return 0;
@@ -749,6 +814,7 @@ int file_create(char *path, struct File **file) {
 //  (Remember to clear the f->f_indirect pointer so you'll know whether it's valid!)
 //
 // Hint: use file_clear_block.
+/* 将文件截断到 newsize 字节 */
 void file_truncate(struct File *f, u_int newsize) {
 	u_int bno, old_nblocks, new_nblocks;
 
@@ -761,9 +827,11 @@ void file_truncate(struct File *f, u_int newsize) {
 
 	if (new_nblocks <= NDIRECT) {
 		for (bno = new_nblocks; bno < old_nblocks; bno++) {
+			/* 移除多余的磁盘块 */
 			panic_on(file_clear_block(f, bno));
 		}
 		if (f->f_indirect) {
+			/* 移除间接指针指向的磁盘块 */
 			free_block(f->f_indirect);
 			f->f_indirect = 0;
 		}
@@ -772,19 +840,24 @@ void file_truncate(struct File *f, u_int newsize) {
 			panic_on(file_clear_block(f, bno));
 		}
 	}
+	/* 更新文件大小 */
 	f->f_size = newsize;
 }
 
 // Overview:
 //  Set file size to newsize.
+/* 将文件大小设置为 newsize */
 int file_set_size(struct File *f, u_int newsize) {
 	if (f->f_size > newsize) {
+		/* 调用截断函数 */
 		file_truncate(f, newsize);
 	}
 
 	f->f_size = newsize;
 
 	if (f->f_dir) {
+		/* 刷新文件所在目录 */
+		/* WHY flush the directory where the file is ? */
 		file_flush(f->f_dir);
 	}
 
@@ -798,6 +871,7 @@ int file_set_size(struct File *f, u_int newsize) {
 //  check whether that disk block is dirty. If so, write it out.
 //
 // Hint: use file_map_block, block_is_dirty, and write_block.
+/* 将文件内容刷新到磁盘 */
 void file_flush(struct File *f) {
 	u_int nblocks;
 	u_int bno;
@@ -810,6 +884,7 @@ void file_flush(struct File *f) {
 		if ((r = file_map_block(f, bno, &diskno, 0)) < 0) {
 			continue;
 		}
+		/* 如果对应磁盘块已经修改则将其刷新到磁盘 */
 		if (block_is_dirty(diskno)) {
 			write_block(diskno);
 		}
@@ -818,6 +893,8 @@ void file_flush(struct File *f) {
 
 // Overview:
 //  Sync the entire file system.  A big hammer.
+/* 同步整个文件系统 */
+/* 非常巨量的操作 */
 void fs_sync(void) {
 	int i;
 	for (i = 0; i < super->s_nblocks; i++) {
@@ -829,9 +906,12 @@ void fs_sync(void) {
 
 // Overview:
 //  Close a file.
+/* 关闭文件 */
 void file_close(struct File *f) {
 	// Flush the file itself, if f's f_dir is set, flush it's f_dir.
+	/* 刷新文件 */
 	file_flush(f);
+	/* 刷新文件目录 */
 	if (f->f_dir) {
 		file_flush(f->f_dir);
 	}
@@ -839,23 +919,30 @@ void file_close(struct File *f) {
 
 // Overview:
 //  Remove a file by truncating it and then zeroing the name.
+/* 移除文件并将其文件名清零 */
+/* 看起来这个函数同样不具备递归删除的功能 */
 int file_remove(char *path) {
 	int r;
 	struct File *f;
 
 	// Step 1: find the file on the disk.
+	/* 找到文件在磁盘中的位置 */
 	if ((r = walk_path(path, 0, &f, 0)) < 0) {
 		return r;
 	}
 
 	// Step 2: truncate it's size to zero.
+	/* 将文件截断到零 */
 	file_truncate(f, 0);
 
 	// Step 3: clear it's name.
+	/* 清空文件名 */
 	f->f_name[0] = '\0';
 
 	// Step 4: flush the file.
+	/* 刷新文件 */
 	file_flush(f);
+	/* 刷新文件目录 */
 	if (f->f_dir) {
 		file_flush(f->f_dir);
 	}

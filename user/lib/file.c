@@ -10,6 +10,8 @@ static int file_stat(struct Fd *fd, struct Stat *stat);
 
 // Dot represents choosing the member within the struct declaration
 // to initialize, with no need to consider the order of members.
+
+/* 文件系统设备 */
 struct Dev devfile = {
     .dev_id = 'f',
     .dev_name = "file",
@@ -78,6 +80,7 @@ int open(const char *path, int mode) {
 
 // Overview:
 //  Close a file descriptor
+/* 关闭文件描述符 */
 int file_close(struct Fd *fd) {
 	int r;
 	struct Filefd *ffd;
@@ -147,6 +150,7 @@ static int file_read(struct Fd *fd, void *buf, u_int n, u_int offset) {
 // Overview:
 //  Find the virtual address of the page that maps the file block
 //  starting at 'offset'.
+/* 查找映射从 offset 开始的文件块的页面的虚拟地址 */
 int read_map(int fdnum, u_int offset, void **blk) {
 	int r;
 	void *va;
@@ -176,6 +180,7 @@ int read_map(int fdnum, u_int offset, void **blk) {
 
 // Overview:
 //  Write 'n' bytes from 'buf' to 'fd' at the current seek position.
+/* 从缓冲区向 fd 中文件指针指向的位置写 n 字节 */
 static int file_write(struct Fd *fd, const void *buf, u_int n, u_int offset) {
 	int r;
 	u_int tot;
@@ -201,6 +206,10 @@ static int file_write(struct Fd *fd, const void *buf, u_int n, u_int offset) {
 	return n;
 }
 
+/* 设置 State 中字段的值 */
+/* 包括 st_name 设置为文件名 */
+/* st_size 设置为文件大小 */
+/* st_isdir 表示文件是否为目录 */
 static int file_stat(struct Fd *fd, struct Stat *st) {
 	struct Filefd *f;
 
@@ -214,6 +223,7 @@ static int file_stat(struct Fd *fd, struct Stat *st) {
 
 // Overview:
 //  Truncate or extend an open file to 'size' bytes
+/* 截断或者扩展一个打开的文件到 size 字节大小 */
 int ftruncate(int fdnum, u_int size) {
 	int i, r;
 	struct Fd *fd;
@@ -266,6 +276,7 @@ int ftruncate(int fdnum, u_int size) {
 
 // Overview:
 //  Delete a file or directory.
+/* 删除一个文件或目录 */
 int remove(const char *path) {
 	// Call fsipc_remove.
 
@@ -275,6 +286,7 @@ int remove(const char *path) {
 
 // Overview:
 //  Synchronize disk with buffer cache
+/* 将磁盘与缓冲区同步 */
 int sync(void) {
 	return fsipc_sync();
 }

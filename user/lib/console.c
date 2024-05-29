@@ -6,6 +6,7 @@ static int cons_write(struct Fd *, const void *, u_int, u_int);
 static int cons_close(struct Fd *);
 static int cons_stat(struct Fd *, struct Stat *);
 
+/* 控制台设备 */
 struct Dev devcons = {
     .dev_id = 'c',
     .dev_name = "cons",
@@ -15,6 +16,7 @@ struct Dev devcons = {
     .dev_stat = cons_stat,
 };
 
+/* 判断是否为控制台 */
 int iscons(int fdnum) {
 	int r;
 	struct Fd *fd;
@@ -25,6 +27,7 @@ int iscons(int fdnum) {
 	return fd->fd_dev_id == devcons.dev_id;
 }
 
+/* 打开控制台 */
 int opencons(void) {
 	int r;
 	struct Fd *fd;
@@ -40,6 +43,7 @@ int opencons(void) {
 	return fd2num(fd);
 }
 
+/* 从控制台读入 */
 int cons_read(struct Fd *fd, void *vbuf, u_int n, u_int offset) {
 	int c;
 
@@ -66,6 +70,7 @@ int cons_read(struct Fd *fd, void *vbuf, u_int n, u_int offset) {
 	return 1;
 }
 
+/* 向控制台写 */
 int cons_write(struct Fd *fd, const void *buf, u_int n, u_int offset) {
 	int r = syscall_print_cons(buf, n);
 	if (r < 0) {
@@ -74,10 +79,12 @@ int cons_write(struct Fd *fd, const void *buf, u_int n, u_int offset) {
 	return n;
 }
 
+/* 关闭控制台 */
 int cons_close(struct Fd *fd) {
 	return 0;
 }
 
+/* 设置 Stat 结构体的相关字段 */
 int cons_stat(struct Fd *fd, struct Stat *stat) {
 	strcpy(stat->st_name, "<cons>");
 	return 0;

@@ -69,6 +69,7 @@ int fd_alloc(struct Fd **fd) {
 	return -E_MAX_OPEN;
 }
 
+/* 关闭文件描述符 */
 void fd_close(struct Fd *fd) {
 	panic_on(syscall_mem_unmap(0, fd));
 }
@@ -102,18 +103,21 @@ int fd_lookup(int fdnum, struct Fd **fd) {
 // 为不同的文件描述符提供不同的地址用于映射
 void *fd2data(struct Fd *fd) {
 	// 整体的映射区间为 [FILEBASE, FILEBASE + 1024 * PDMAP)
-	// 正好在存储文件描述符的空间 [FILEBASE - PDMAP, FILEBASE) 的上面
+	// 正好在存储文件描述符加文件的空间 [FILEBASE - PDMAP, FILEBASE) 的上面
 	return (void *)INDEX2DATA(fd2num(fd));
 }
 
+/* 文件描述符转文件描述符索引 */
 int fd2num(struct Fd *fd) {
 	return ((u_int)fd - FDTABLE) / PTMAP;
 }
 
+/* 文件描述符索引转文件描述符 */
 int num2fd(int fd) {
 	return fd * PTMAP + FDTABLE;
 }
 
+/* 关闭文件描述符 */
 int close(int fdnum) {
 	int r;
 	struct Dev *dev = NULL;
@@ -128,6 +132,7 @@ int close(int fdnum) {
 	return r;
 }
 
+/* 关闭所有文件描述符 */
 void close_all(void) {
 	int i;
 
@@ -148,6 +153,7 @@ void close_all(void) {
  *   Use 'fd2data' to get the data address to 'fd'.
  *   Use 'syscall_mem_map' to share the data pages.
  */
+/* 复制文件描述符 */
 int dup(int oldfdnum, int newfdnum) {
 	int i, r;
 	void *ova, *nva;
@@ -206,6 +212,7 @@ err:
 //  Update seek position.
 //  Return the number of bytes read successfully.
 //  Return < 0 on error.
+/* 从 fd 中在当前 seek 位置读取至多 n 字节的数据到缓冲区 */
 int read(int fdnum, void *buf, u_int n) {
 	int r;
 
@@ -250,9 +257,11 @@ int read(int fdnum, void *buf, u_int n) {
 	return r;
 }
 
+/* 调用 read 函数进行数据读取 */
 int readn(int fdnum, void *buf, u_int n) {
 	int m, tot;
 
+	/* 但是为什么要循环读取呢 */
 	for (tot = 0; tot < n; tot += m) {
 		m = read(fdnum, (char *)buf + tot, n - tot);
 
@@ -268,6 +277,7 @@ int readn(int fdnum, void *buf, u_int n) {
 	return tot;
 }
 
+/* 类似于 read 函数向设备中写入数据 */
 int write(int fdnum, const void *buf, u_int n) {
 	int r;
 	struct Dev *dev;
@@ -289,6 +299,7 @@ int write(int fdnum, const void *buf, u_int n) {
 	return r;
 }
 
+/* 移动文件指针 */
 int seek(int fdnum, u_int offset) {
 	int r;
 	struct Fd *fd;
@@ -300,6 +311,9 @@ int seek(int fdnum, u_int offset) {
 	fd->fd_offset = offset;
 	return 0;
 }
+
+/* 猜测下面这两个函数用于寻找文件所在设备 */
+/* 通过 fd中的 fd_dev_id 字段 */
 
 int fstat(int fdnum, struct Stat *stat) {
 	int r;
