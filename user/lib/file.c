@@ -290,3 +290,9 @@ int remove(const char *path) {
 int sync(void) {
 	return fsipc_sync();
 }
+
+// lab5-2-exam
+int copy(const char *src_path,const char *dst_path){
+	// Lab 5-2-Exam: Your code here. (2/6)
+	return fsipc_copy(src_path, dst_path);
+}

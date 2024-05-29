@@ -37,3 +37,6 @@ void fs_sync(void);
 extern uint32_t *bitmap;
 int map_block(u_int);
 int alloc_block(void);
+
+// lab5-2-exam
+int directory_copy(char *src_path, char *dst_path);

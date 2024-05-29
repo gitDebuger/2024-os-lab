@@ -16,6 +16,7 @@ enum {
 	FSREQ_DIRTY,
 	FSREQ_REMOVE,
 	FSREQ_SYNC,
+	FSREQ_COPY,
 	MAX_FSREQNO,
 };
 
@@ -49,6 +50,12 @@ struct Fsreq_dirty {
 
 struct Fsreq_remove {
 	char req_path[MAXPATHLEN];
+};
+
+// lab5-2-exam
+struct Fsreq_copy {
+   char req_src_path[MAXPATHLEN];
+   char req_dst_path[MAXPATHLEN];
 };
 
 #endif
