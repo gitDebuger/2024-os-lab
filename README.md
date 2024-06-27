@@ -32,6 +32,6 @@
 
 本人在实验课中的成绩如下，所以请放心答案的正确性：
 
-![result](pic\result.png)
+![result](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/result.png)
 
 **希望大家能体验到自己动手完成一个小操作系统的乐趣！**
