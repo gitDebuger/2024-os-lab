@@ -21,7 +21,7 @@ cat Stage.txt
 
 两次运行，文件 `README.txt` 分别位于**“未跟踪的文件”**和**“要提交的变更”**标签下。
 
-![lab0-1](pic\lab0-1.png)
+![lab0-1](https://github.com/gitDebuger/2024-os-lab/tree/documents/pic/lab0-1.png)
 
 依次执行命令：
 
@@ -35,7 +35,7 @@ cat Modified.txt
 
 因为该文件已经被跟踪过，所以不会位于未跟踪标签下，而是相对于上次提交发生了变化，所以会位于已变更标签下。
 
-![lab0-2](pic\lab0-2.png)
+![lab0-2](https://github.com/gitDebuger/2024-os-lab/tree/documents/pic/lab0-2.png)
 
 ### Thinking 0.2
 
