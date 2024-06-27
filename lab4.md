@@ -374,6 +374,6 @@ int env_clone(struct Env **new, u_int parent_id) {
 
 进程通信是多进程环境的重要功能，通过进程通信可以实现进程的同步与互斥，而不是各进程毫无关联，退化为批处理系统。
 
-![彩蛋](pic\彩蛋.png)
+![彩蛋](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/%E5%BD%A9%E8%9B%8B.png?raw=true)
 
 另外，这个彩蛋真是太有意思啦！
