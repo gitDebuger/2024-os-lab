@@ -131,11 +131,11 @@ struct File {
 
 编写如下的测试代码：
 
-![5-5-code](./pic/5-5-code.png)
+![5-5-code](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/5-5-code.png)
 
 运行结果如下：
 
-![5-5-result](./pic/5-5-result.png)
+![5-5-result](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/5-5-result.png)
 
 说明 `fork` 前后的父子进程会共享文件描述符和定位指针。
 
@@ -174,7 +174,7 @@ struct Filefd {
 
 **图中有多种不同形式的箭头，请解释这些不同箭头的差别，并思考我们的操作系统是如何实现对应类型的进程间通信的。**
 
-![file-system](pic\file-system.png)
+![file-system](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/file-system.png)
 
 我们的进程通过和 `file_server` 这个进程的通信来操作文件。
 
@@ -273,4 +273,4 @@ int directory_copy(char *src_path, char *dst_path) {
 
 本学期操作系统的上机实验到这里就要告一段落了，虽然说最后有一点小遗憾，但是整体结果还是不错的，就这样吧。
 
-![result](pic\result.png)
+![result](https://github.com/gitDebuger/2024-os-lab/blob/documents/pic/result.png)
